@@ -1,0 +1,43 @@
+@startuml
+' This UML source uses PlantUML format.
+' https://plantuml.com/sequence-diagram for syntax details.
+
+' Optional styles
+skinparam SequenceMessageAlign direction
+skinparam shadowing false
+skinparam monochrome reverse
+
+participant "War Thunder\nlocalhost:8111" as wt
+box "Inputs and transport"
+participant poll
+queue "hud channel" as hudc
+endbox
+
+box "Parsing, caching and persistence"
+participant hudmsg
+participant keep
+database sqlite
+endbox
+
+box "Domain logic"
+participant damage
+participant event
+endbox
+
+title "Work with data of 'hudmsg' handler"
+
+poll->wt: GET `hudmsg`
+poll->hudc
+hudc->hudmsg
+hudmsg->damage: is it important?
+alt yes it is important
+	hudmsg->keep: save it
+	keep->sqlite
+end
+hudmsg->event: is it important?
+alt yes it is important
+	hudmsg->keep: save it
+	keep->sqlite
+end
+
+@enduml
