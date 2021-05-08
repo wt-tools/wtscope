@@ -12,9 +12,12 @@ var damageTexts = []Translation{
 	{En, damage.Wrecked, "has been wrecked"},
 	{Ru, damage.Wrecked, "выведен из строя"},
 
-	{En, damage.Gived, "?"},
-	{Ru, damage.Gived, "получил"},
+	{En, damage.Got, "?"},
+	{Ru, damage.Got, "получил"},
 
 	{En, damage.Fired, "fired"},
 	{Ru, damage.Fired, "поджег"},
+
+	{En, damage.Connected, "connected"},
+	{Ru, damage.Connected, "присоединился"},
 }

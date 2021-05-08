@@ -7,8 +7,8 @@ type httper interface {
 }
 
 type task struct {
-	req    *http.Request
-	repeat int
-	retry  int
-	ret    chan []byte
+	method, url string
+	repeat      int
+	retry       int
+	ret         chan []byte
 }

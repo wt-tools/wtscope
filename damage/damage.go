@@ -9,6 +9,7 @@ type (
 		Action Action
 		Who    Vehicle
 		Whom   Vehicle
+		Origin string
 	}
 	Vehicle struct {
 		Type     string

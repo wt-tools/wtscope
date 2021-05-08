@@ -2,7 +2,12 @@
 // in sqlite.
 package keep
 
-import "github.com/grafov/kiwi"
+import (
+	"context"
+
+	"github.com/grafov/kiwi"
+	"github.com/wt-tools/adjutant/damage"
+)
 
 type service struct {
 	log *kiwi.Logger
@@ -13,5 +18,8 @@ func New(log *kiwi.Logger) *service {
 	return &service{log}
 }
 
-func (s *service) Persist() {
+func (s *service) Persist(context.Context, damage.Damage) {
+}
+
+func (s *service) Cache(context.Context, damage.Damage) {
 }

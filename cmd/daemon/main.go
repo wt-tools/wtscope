@@ -13,14 +13,17 @@ import (
 
 func main() {
 	ctx := context.Background()
-	logger := kiwi.New()
-	kiwi.SinkTo(os.Stdout, kiwi.AsLogfmt())
-	localStorage := keep.New(logger)
-	defaultPolling := poll.New(logger, http.DefaultClient)
-	hudmsgWorker := hudmsg.New(logger, localStorage, defaultPolling)
+	kiwi.SinkTo(os.Stdout, kiwi.AsLogfmt()).Start()
+	log := kiwi.New()
+	log.Log("program", "started")
+	localStorage := keep.New(log)
+	defaultPolling := poll.New(log, http.DefaultClient)
+	hudmsgWorker := hudmsg.New(log, localStorage, defaultPolling)
+
+	go defaultPolling.Do()
 	go hudmsgWorker.Grab(ctx)
 	for {
 		ev := hudmsgWorker.LatestDamage(ctx)
-		kiwi.Log("event", ev)
+		log.Log("damage", ev.Origin)
 	}
 }

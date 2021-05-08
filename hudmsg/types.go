@@ -3,7 +3,6 @@ package hudmsg
 import (
 	"context"
 	"encoding/json"
-	"net/http"
 
 	"github.com/wt-tools/adjutant/damage"
 )
@@ -33,7 +32,7 @@ type filter interface {
 	Important(context.Context) bool
 }
 type poller interface {
-	Add(*http.Request, int, int) chan []byte
+	Add(string, string, int, int) chan []byte
 }
 type configurator interface {
 	Username() string

@@ -4,8 +4,11 @@ type Action int
 
 const (
 	Unknown Action = iota
+	Connected
 	Destroyed
-	Gived
+	Got
 	Fired
 	Wrecked
 )
+
+// подбил, сбил, присоединился, потерял связь

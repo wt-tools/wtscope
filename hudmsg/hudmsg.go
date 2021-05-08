@@ -10,6 +10,7 @@ import (
 	"github.com/grafov/kiwi"
 	"github.com/wt-tools/adjutant/config"
 	"github.com/wt-tools/adjutant/damage"
+	"github.com/wt-tools/adjutant/poll"
 	"github.com/wt-tools/adjutant/tag"
 )
 
@@ -22,25 +23,28 @@ type service struct {
 }
 
 func New(log *kiwi.Logger, keep keeper, poll poller) *service {
-	const name = "event"
-	return &service{keep: keep, log: log.Fork().With(tag.Service, name)}
+	const name = "hudmsg"
+	return &service{
+		log:  log.Fork().With(tag.Service, name),
+		keep: keep,
+		poll: poll,
+	}
 }
 
 func (s *service) Grab(ctx context.Context) {
 	var (
-		r    *http.Request
 		data []byte
 		raw  Raw
 		ok   bool
 		err  error
 	)
-	r, err = http.NewRequestWithContext(ctx, http.MethodGet, config.GamePoint("hudmsg"), nil)
-	ret := s.poll.Add(r, -1, 0)
+	ret := s.poll.Add(http.MethodGet, config.GamePoint("hudmsg"), poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-ret; !ok {
 			s.log.Log(tag.ExitOn, "channel closed")
 			return
 		}
+		s.log.Log("message get", data)
 		if err = json.Unmarshal(data, &raw); err != nil {
 			s.log.Log(tag.Error, err)
 			continue
@@ -51,16 +55,17 @@ func (s *service) Grab(ctx context.Context) {
 				s.log.Log(tag.Error, err)
 				break
 			}
-			s.keep.Cache(ctx, dmg) // XXX
-			if dmg.Important() {
-				s.keep.Persist(ctx, dmg) // XXX
-			}
+			latest <- dmg
+			// s.keep.Cache(ctx, dmg) // XXX
+			// if dmg.Important() {
+			//	s.keep.Persist(ctx, dmg) // XXX
+			// }
 		}
 	}
 }
 
-func (s *service) LatestDamage(ctx context.Context) damage.Damage {
-	var dmg damage.Damage
+var latest = make(chan damage.Damage, 3) // XXX
 
-	return dmg
+func (s *service) LatestDamage(ctx context.Context) damage.Damage {
+	return <-latest
 }
