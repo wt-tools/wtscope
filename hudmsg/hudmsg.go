@@ -59,8 +59,8 @@ func (s *service) Grab(ctx context.Context) {
 	}
 }
 
-func (s *service) parseDamage(ctx context.Context, msg string) (damage.Damage, error) {
-	// XXX parse string
-	dmg := damage.New(raw.Damage) // XXX
-	return dmg, nil
+func (s *service) LatestDamage(ctx context.Context) damage.Damage {
+	var dmg damage.Damage
+
+	return dmg
 }

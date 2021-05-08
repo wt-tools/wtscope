@@ -18,9 +18,9 @@ func main() {
 	localStorage := keep.New(logger)
 	defaultPolling := poll.New(logger, http.DefaultClient)
 	hudmsgWorker := hudmsg.New(logger, localStorage, defaultPolling)
-	hudmsgWorker.Grab(ctx)
+	go hudmsgWorker.Grab(ctx)
 	for {
-		ev := hudmsgWorker.GetDamage(ctx)
+		ev := hudmsgWorker.LatestDamage(ctx)
 		kiwi.Log("event", ev)
 	}
 }

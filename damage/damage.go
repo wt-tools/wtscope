@@ -3,17 +3,12 @@
 // It isolated from logging and configuration environment.
 package damage
 
-import (
-	"time"
-)
-
 type (
 	Damage struct {
-		Action   string
-		ActionID ActionID
-		Who      Vehicle
-		Whom     Vehicle
-		At       time.Time
+		ID     uint
+		Action Action
+		Who    Vehicle
+		Whom   Vehicle
 	}
 	Vehicle struct {
 		Type     string
@@ -23,10 +18,17 @@ type (
 	}
 )
 
-func New(act Action) *Damage {
-
+func New(id uint, who Vehicle, act Action, whom Vehicle) *Damage {
+	return &Damage{
+		ID:     id,
+		Who:    who,
+		Action: act,
+		Whom:   whom,
+	}
 }
 
+// XXX
 func (d *Damage) Important() bool {
-
+	// XXX
+	return true
 }

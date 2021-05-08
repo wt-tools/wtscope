@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+
+	"github.com/wt-tools/adjutant/damage"
 )
 
 type (
@@ -24,7 +26,8 @@ type (
 )
 
 type keeper interface {
-	Save(context.Context)
+	Persist(context.Context, damage.Damage)
+	Cache(context.Context, damage.Damage)
 }
 type filter interface {
 	Important(context.Context) bool

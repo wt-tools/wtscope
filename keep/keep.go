@@ -4,11 +4,14 @@ package keep
 
 import "github.com/grafov/kiwi"
 
-type Service struct {
+type service struct {
 	log *kiwi.Logger
 }
 
 // New ...
-func New(log *kiwi.Logger) *Service {
-	return &Service{log}
+func New(log *kiwi.Logger) *service {
+	return &service{log}
+}
+
+func (s *service) Persist() {
 }

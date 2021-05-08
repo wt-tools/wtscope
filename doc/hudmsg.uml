@@ -7,7 +7,15 @@ skinparam SequenceMessageAlign direction
 skinparam shadowing false
 skinparam monochrome reverse
 
+title "Work with data of 'hudmsg' handler"
+
+actor user
 participant "War Thunder\nlocalhost:8111" as wt
+
+box "Exposed API"
+participant "HTTP API" as api
+endbox
+
 box "Inputs and transport"
 participant poll
 queue "hud channel" as hudc
@@ -15,6 +23,8 @@ endbox
 
 box "Parsing, caching and persistence"
 participant hudmsg
+participant parse
+participant locale
 participant keep
 database sqlite
 endbox
@@ -24,11 +34,15 @@ participant damage
 participant event
 endbox
 
-title "Work with data of 'hudmsg' handler"
+== Get new damage/events data from War Thunder ==
 
+user->wt: Runs and plays the game
 poll->wt: GET `hudmsg`
+note left of poll: Poll WT periodically in 2 sec
 poll->hudc
 hudc->hudmsg
+hudmsg->parse: Tokenize message
+hudmsg->locale: Get translations
 hudmsg->damage: is it important?
 alt yes it is important
 	hudmsg->keep: save it
@@ -39,5 +53,15 @@ alt yes it is important
 	hudmsg->keep: save it
 	keep->sqlite
 end
+
+== Get latest data about damage ==
+
+user->api: `GET damage/latest`
+api->hudmsg: LatestDamage()
+hudmsg->keep: LatestDamage()
+keep->keep: CachedDamage()
+hudmsg<--keep
+api<--hudmsg
+user<--api: JSON response
 
 @enduml
