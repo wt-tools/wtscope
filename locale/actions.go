@@ -24,12 +24,14 @@ var actionTexts = []Translation{
 	{En, action.SoftLanding, "performed a soft landing"},
 
 	{En, action.FinalBlow, "has delivered the final blow!"},
-	{Ru, action.FinalBlow, "нанес последний удар!"},
+	{Ru, action.FinalBlow, "нанёс последний удар!"},
 
 	{En, action.Damaged, "damaged"},
 
 	{En, action.ShotDown, "shot down"},
 	{Ru, action.ShotDown, "сбил"},
 
-	{En, action.Disconnect, "kd?NET_PLAYER_DISCONNECT_FROM_GAME"},
+	{En, action.Disconnected, "td! kd?NET_PLAYER_DISCONNECT_FROM_GAME"},
+
+	{Ru, action.LostConnect, "потерял связь"},
 }

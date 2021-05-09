@@ -5,10 +5,16 @@ type Action int
 const (
 	Unknown Action = iota
 	Connected
+	LostConnect
+	Disconnected
+	Damaged
 	Destroyed
-	Got
+	ShotDown
+	Achieved
 	Afire
 	Wrecked
+	SoftLanding
+	FinalBlow
 )
 
 // подбил, сбил, присоединился, потерял связь
