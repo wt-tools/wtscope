@@ -1,4 +1,4 @@
-package damage
+package action
 
 type Action int
 
@@ -7,7 +7,7 @@ const (
 	Connected
 	Destroyed
 	Got
-	Fired
+	Afire
 	Wrecked
 )
 

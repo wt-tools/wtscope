@@ -8,26 +8,28 @@ import (
 	"net/http"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/config"
-	"github.com/wt-tools/adjutant/damage"
+	"github.com/wt-tools/adjutant/action"
 	"github.com/wt-tools/adjutant/poll"
 	"github.com/wt-tools/adjutant/tag"
 )
 
 type service struct {
-	keep keeper
-	poll poller
-	filt filter
-	conf configurator
-	log  *kiwi.Logger
+	keep  keeper
+	poll  poller
+	filt  filter
+	dedup deduplicator
+	conf  configurator
+	log   *kiwi.Logger
 }
 
-func New(log *kiwi.Logger, keep keeper, poll poller) *service {
+func New(log *kiwi.Logger, conf configurator, keep keeper, poll poller, dedup deduplicator) *service {
 	const name = "hudmsg"
 	return &service{
-		log:  log.Fork().With(tag.Service, name),
-		keep: keep,
-		poll: poll,
+		log:   log.Fork().With(tag.Service, name),
+		conf:  conf,
+		keep:  keep,
+		poll:  poll,
+		dedup: dedup,
 	}
 }
 
@@ -38,22 +40,24 @@ func (s *service) Grab(ctx context.Context) {
 		ok   bool
 		err  error
 	)
-	ret := s.poll.Add(http.MethodGet, config.GamePoint("hudmsg"), poll.RepeatEndlessly, 0)
+	ret := s.poll.Add(http.MethodGet, s.conf.GamePoint("hudmsg"), poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-ret; !ok {
 			s.log.Log(tag.ExitOn, "channel closed")
 			return
 		}
-		s.log.Log("message get", data)
 		if err = json.Unmarshal(data, &raw); err != nil {
 			s.log.Log(tag.Error, err)
 			continue
 		}
 		for _, d := range raw.Damage {
-			dmg, err := s.parseDamage(ctx, d.Msg)
+			if s.dedup.Exists(d.ID) {
+				continue
+			}
+			dmg, err := s.parseDamage(ctx, d.Msg, d.ID)
 			if err != nil {
 				s.log.Log(tag.Error, err)
-				break
+				continue
 			}
 			latest <- dmg
 			// s.keep.Cache(ctx, dmg) // XXX
@@ -64,8 +68,8 @@ func (s *service) Grab(ctx context.Context) {
 	}
 }
 
-var latest = make(chan damage.Damage, 3) // XXX
+var latest = make(chan action.Damage, 3) // XXX
 
-func (s *service) LatestDamage(ctx context.Context) damage.Damage {
+func (s *service) LatestDamage(ctx context.Context) action.Damage {
 	return <-latest
 }

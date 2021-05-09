@@ -24,7 +24,6 @@ type service struct {
 }
 
 func New(log *kiwi.Logger, c httper) *service {
-	log.Log("debug", c)
 	return &service{log: log, httpc: c}
 }
 
@@ -66,7 +65,6 @@ func (s *service) Do() {
 			s.log.Log(tag.Error, err)
 			continue
 		}
-		s.log.Log("data", data)
 		t.ret <- data
 	}
 }

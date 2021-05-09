@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/wt-tools/adjutant/damage"
+	"github.com/wt-tools/adjutant/action"
 )
 
 type (
@@ -25,8 +25,8 @@ type (
 )
 
 type keeper interface {
-	Persist(context.Context, damage.Damage)
-	Cache(context.Context, damage.Damage)
+	Persist(context.Context, action.Damage)
+	Cache(context.Context, action.Damage)
 }
 type filter interface {
 	Important(context.Context) bool
@@ -34,6 +34,9 @@ type filter interface {
 type poller interface {
 	Add(string, string, int, int) chan []byte
 }
+type deduplicator interface {
+	Exists(uint) bool
+}
 type configurator interface {
-	Username() string
+	GamePoint(string) string
 }

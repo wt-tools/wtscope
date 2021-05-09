@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	for _, v := range damageTexts {
+	for _, v := range actionTexts {
 		if _, ok := translationByIndex[v.Lang]; !ok {
 			translationByIndex[v.Lang] = make(map[damage.Action]string)
 		}
@@ -28,13 +28,13 @@ func init() {
 	}
 }
 
-// DamageText gets text of damage message by its index.
-func DamageText(lang Lang, index damage.Action) string {
+// ActionText gets text of damage message by its index.
+func ActionText(lang Lang, index damage.Action) string {
 	return translationByIndex[lang][index]
 }
 
-// DamageIndex gets index of damage message by its text for provided
+// ActionIndex gets index of damage message by its text for provided
 // language.
-func DamageIndex(lang Lang, text string) damage.Action {
+func ActionIndex(lang Lang, text string) damage.Action {
 	return translationByText[lang][text]
 }

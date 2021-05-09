@@ -1,7 +1,7 @@
-// Package damage represents high level logic for damage related data.
-// It knows nothing about input formats or storage for the data.
-// It isolated from logging and configuration environment.
-package damage
+// Package action represents high level logic for damage&events related data.
+// It knows nothing about input formats or storage for the data. It
+// isolated from logging and configuration environment.
+package action
 
 type (
 	Damage struct {
