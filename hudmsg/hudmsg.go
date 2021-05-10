@@ -68,8 +68,8 @@ func (s *service) Grab(ctx context.Context) {
 	}
 }
 
-var latest = make(chan action.Damage, 3) // XXX
+var latest = make(chan action.GeneralAction, 3) // XXX
 
-func (s *service) LatestDamage(ctx context.Context) action.Damage {
+func (s *service) LatestAction(ctx context.Context) action.GeneralAction {
 	return <-latest
 }

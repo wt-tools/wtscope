@@ -1,5 +1,7 @@
 package action
 
+import "time"
+
 type Action int
 
 const (
@@ -15,4 +17,19 @@ const (
 	Wrecked
 	SoftLanding
 	FinalBlow
+)
+
+type (
+	GeneralAction struct {
+		ID          uint
+		Damage      *Damage
+		Achievement *Achievement
+		Origin      string
+		At          time.Time
+	}
+	Player struct {
+		ID   uint
+		Clan string
+		Name string
+	}
 )

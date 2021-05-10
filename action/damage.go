@@ -5,28 +5,17 @@ package action
 
 type (
 	Damage struct {
-		ID     uint
-		Action Action
-		Who    Vehicle
-		Whom   Vehicle
-		Origin string
+		Action        Action
+		Vehicle       Vehicle
+		Player        Player
+		TargetVehicle Vehicle
+		TargetPlayer  Player
 	}
 	Vehicle struct {
-		Type     string
-		TypeID   uint
-		Player   string
-		PlayerID uint
+		ID   uint
+		Type string
 	}
 )
-
-func New(id uint, who Vehicle, act Action, whom Vehicle) *Damage {
-	return &Damage{
-		ID:     id,
-		Who:    who,
-		Action: act,
-		Whom:   whom,
-	}
-}
 
 // XXX
 func (d *Damage) Important() bool {

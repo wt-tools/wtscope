@@ -62,15 +62,17 @@ func TestParseRu(t *testing.T) {
 	input := []string{
 		"MONOLIT523 (АСУ-57) уничтожил ^oTSFo^ feuerjinn (Wirbelwind)",
 		"Debiiro (ИСУ-152) уничтожил [_ViP_] PATRIOT_71_USSR (M24)",
+		"Debiiro (ИСУ-152) уничтожил ^xTHAx^ Gow13510 (T55E1)",
 		"Alpacho (M18) поджёг alkobomgara (КВ-2)",
 		"Securom (СУ-152) получил \"Спасатель танков: x1\"",
 		"[BLR] _Power_of_Black_ (ИС-2) получил \"Главный калибр\"",
 		"[TVS4] Gei_ye_pa (ЗиС-12 (94-КМ)) получил \"Спасатель танков: x4\"",
+		"⋇ UGAR^ azumax0880 (Lvtdgb m/40) получил \"Командная работа: x1\"",
 		"Alpacho потерял связь",
 		"Alpachotd! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 	}
 
 	for i, msg := range input {
-		parseDamage(msg, uint(i))
+		parseDamage(msg+" ", uint(i))
 	}
 }
