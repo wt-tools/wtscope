@@ -3,6 +3,8 @@ package hudmsg
 //go:generate stringer -type=tokenType
 
 import (
+	"strings"
+
 	"github.com/wt-tools/adjutant/action"
 )
 
@@ -25,7 +27,7 @@ const (
 )
 
 // Just funny to parse it without regexps.
-func parseDamage(msg string, id uint) (action.GeneralAction, error) {
+func parseDamage(dmg Damage) (action.GeneralAction, error) {
 	// The message started with username possibly prepended by clan tag.
 	var (
 		mode           = playerNameType
@@ -34,7 +36,7 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 		prevToken      = &token{}
 		tokens         []token
 	)
-	for i, c := range msg {
+	for i, c := range dmg.Msg {
 		word = append(word, c)
 		if parens.insideParens(c) || quotes.insideQuotes(c) {
 			continue
@@ -44,14 +46,21 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 		}
 		newToken := token{pos: i, text: word}
 		switch mode {
+		case clanTagType:
+			if !isClanTag(word) {
+				mode = playerNameType
+			}
 		case playerNameType:
 			if parens.occurs {
 				mode = vehicleType
 				break
 			}
-			// check for clan + player name pair
+			if isClanTag(word) {
+				mode = clanTagType
+				break
+			}
 			if prevToken.index == playerNameType {
-				prevToken.index = clanTagType
+				mode = actionType
 			}
 		case vehicleType:
 			if !parens.occurs {
@@ -60,11 +69,16 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 		case actionType:
 			if quotes.occurs {
 				mode = achievementType
+				break
 			}
 			// second player + vehicle info
 			if parens.occurs {
 				mode = vehicleType
 				prevToken.index = playerNameType
+				break
+			}
+			if isClanTag(word) {
+				mode = clanTagType
 			}
 		}
 		// cleanup quotes and parens
@@ -78,7 +92,6 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 		parens.reset()
 		word = nil
 	}
-	// fmt.Printf("%s ->\n", msg)
 	// for _, m := range tokens {
 	//	fmt.Printf("%d: %s :: %v\n", m.pos, m.index.String(), string(m.text))
 	// }
@@ -120,8 +133,9 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 	}
 
 	d := action.GeneralAction{
-		ID:     id,
-		Origin: msg,
+		ID:     dmg.ID,
+		Origin: dmg.Msg,
+		Enemy:  dmg.Enemy,
 		Damage: &action.Damage{
 			Player:        p1,
 			Vehicle:       v1,
@@ -136,6 +150,16 @@ func parseDamage(msg string, id uint) (action.GeneralAction, error) {
 func isSpace(c rune) bool {
 	if c == ' ' {
 		return true
+	}
+	return false
+}
+
+func isClanTag(s []rune) bool {
+	clanQuotes := []rune{'[', '^', '-', '=', ']'}
+	for _, t := range clanQuotes {
+		if strings.ContainsRune(string(s), t) {
+			return true
+		}
 	}
 	return false
 }

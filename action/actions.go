@@ -25,6 +25,7 @@ type (
 		Damage      *Damage
 		Achievement *Achievement
 		Origin      string
+		Enemy       bool
 		At          time.Time
 	}
 	Player struct {

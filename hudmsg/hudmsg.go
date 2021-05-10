@@ -54,7 +54,7 @@ func (s *service) Grab(ctx context.Context) {
 			if s.dedup.Exists(d.ID) {
 				continue
 			}
-			dmg, err := parseDamage(d.Msg, d.ID)
+			dmg, err := parseDamage(d)
 			if err != nil {
 				s.log.Log(tag.Error, err)
 				continue
