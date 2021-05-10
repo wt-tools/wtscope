@@ -3,6 +3,7 @@ package hudmsg
 //go:generate stringer -type=tokenType
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/wt-tools/adjutant/action"
@@ -12,7 +13,7 @@ type (
 	token struct {
 		pos   int
 		index tokenType
-		text  []rune
+		text  string
 	}
 	tokenType int
 )
@@ -44,10 +45,10 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 		if !isSpace(c) {
 			continue
 		}
-		newToken := token{pos: i, text: word}
+		newToken := token{pos: i, text: strings.TrimSpace(string(word))}
 		switch mode {
 		case clanTagType:
-			if !isClanTag(word) {
+			if !isClanTag(newToken.text) {
 				mode = playerNameType
 			}
 		case playerNameType:
@@ -55,7 +56,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				mode = vehicleType
 				break
 			}
-			if isClanTag(word) {
+			if isClanTag(newToken.text) {
 				mode = clanTagType
 				break
 			}
@@ -77,13 +78,13 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				prevToken.index = playerNameType
 				break
 			}
-			if isClanTag(word) {
+			if isClanTag(newToken.text) {
 				mode = clanTagType
 			}
 		}
 		// cleanup quotes and parens
 		if mode == vehicleType || mode == achievementType {
-			newToken.text = word[1 : len(word)-2]
+			newToken.text = string(word[1 : len(word)-2])
 		}
 		newToken.index = mode
 		tokens = append(tokens, newToken)
@@ -92,9 +93,9 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 		parens.reset()
 		word = nil
 	}
-	// for _, m := range tokens {
-	//	fmt.Printf("%d: %s :: %v\n", m.pos, m.index.String(), string(m.text))
-	// }
+	for _, m := range tokens {
+		fmt.Printf("%d: %s :: %v\n", m.pos, m.index.String(), string(m.text))
+	}
 	var (
 		p1, p2 action.Player
 		v1, v2 action.Vehicle
@@ -154,10 +155,11 @@ func isSpace(c rune) bool {
 	return false
 }
 
-func isClanTag(s []rune) bool {
-	clanQuotes := []rune{'[', '^', '-', '=', ']'}
-	for _, t := range clanQuotes {
-		if strings.ContainsRune(string(s), t) {
+func isClanTag(s string) bool {
+	prefixes := []string{"[", "^", "-", "="}
+	suffixes := []string{"]", "^", "-", "="}
+	for i, t := range prefixes {
+		if strings.HasPrefix(s, t) && strings.HasSuffix(s, string(suffixes[i])) {
 			return true
 		}
 	}

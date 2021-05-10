@@ -83,7 +83,7 @@ func TestParseRu(t *testing.T) {
 		"Dalnoboyshiktd! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 	}
 
-	for i, msg := range input {
-		parseDamage(msg+" ", uint(i))
+	for _, msg := range input {
+		parseDamage(Damage{Msg: msg})
 	}
 }
