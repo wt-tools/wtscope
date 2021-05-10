@@ -4,7 +4,6 @@ package hudmsg
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/wt-tools/adjutant/action"
 )
@@ -37,18 +36,19 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 		prevToken      = &token{}
 		tokens         []token
 	)
-	for i, c := range dmg.Msg {
-		word = append(word, c)
+	for i, c := range dmg.Msg + " " { // TODO cleanup hack with trailing space
 		if parens.insideParens(c) || quotes.insideQuotes(c) {
+			word = append(word, c)
 			continue
 		}
 		if !isSpace(c) {
+			word = append(word, c)
 			continue
 		}
-		newToken := token{pos: i, text: strings.TrimSpace(string(word))}
+		newToken := token{pos: i, text: string(word)}
 		switch mode {
 		case clanTagType:
-			if !isClanTag(newToken.text) {
+			if !isClanTag(word) {
 				mode = playerNameType
 			}
 		case playerNameType:
@@ -56,7 +56,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				mode = vehicleType
 				break
 			}
-			if isClanTag(newToken.text) {
+			if isClanTag(word) {
 				mode = clanTagType
 				break
 			}
@@ -78,13 +78,13 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				prevToken.index = playerNameType
 				break
 			}
-			if isClanTag(newToken.text) {
+			if isClanTag(word) {
 				mode = clanTagType
 			}
 		}
 		// cleanup quotes and parens
 		if mode == vehicleType || mode == achievementType {
-			newToken.text = string(word[1 : len(word)-2])
+			newToken.text = string(word[1 : len(word)-1])
 		}
 		newToken.index = mode
 		tokens = append(tokens, newToken)
@@ -155,11 +155,14 @@ func isSpace(c rune) bool {
 	return false
 }
 
-func isClanTag(s string) bool {
-	prefixes := []string{"[", "^", "-", "="}
-	suffixes := []string{"]", "^", "-", "="}
+func isClanTag(s []rune) bool {
+	if len(s) < 2 {
+		return false
+	}
+	prefixes := []rune{'[', '^', '-', '='}
+	suffixes := []rune{']', '^', '-', '='}
 	for i, t := range prefixes {
-		if strings.HasPrefix(s, t) && strings.HasSuffix(s, string(suffixes[i])) {
+		if s[0] == t && s[len(s)-1] == suffixes[i] {
 			return true
 		}
 	}
