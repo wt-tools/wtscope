@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/wt-tools/adjutant/action"
+	"github.com/wt-tools/hq/action"
 )
 
 type (

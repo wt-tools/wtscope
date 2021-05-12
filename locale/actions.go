@@ -1,6 +1,6 @@
 package locale
 
-import "github.com/wt-tools/adjutant/action"
+import "github.com/wt-tools/hq/action"
 
 var actionTexts = []Translation{
 	{En, action.Unknown, "unknown"},
@@ -14,6 +14,8 @@ var actionTexts = []Translation{
 
 	{En, action.Achieved, "has achieved"},
 	{Ru, action.Achieved, "получил"},
+
+	{En, action.Unknown, "has joined event"}, // XXX
 
 	{En, action.Afire, "set afire"},
 	{Ru, action.Afire, "поджег"},
@@ -31,7 +33,11 @@ var actionTexts = []Translation{
 	{En, action.ShotDown, "shot down"},
 	{Ru, action.ShotDown, "сбил"},
 
+	{Ru, action.Unknown, "подбил"}, // XXX
+
+	{Ru, action.Unknown, "разбился"}, // XXX
+
 	{En, action.Disconnected, "td! kd?NET_PLAYER_DISCONNECT_FROM_GAME"},
 
-	{Ru, action.LostConnect, "потерял связь"},
+	{Ru, action.LostConnect, "потерял связь"}, // XXX
 }

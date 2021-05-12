@@ -5,7 +5,7 @@ package hudmsg
 import (
 	"fmt"
 
-	"github.com/wt-tools/adjutant/action"
+	"github.com/wt-tools/hq/action"
 )
 
 type (

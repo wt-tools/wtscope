@@ -6,11 +6,17 @@ import (
 	"context"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/action"
+	"github.com/wt-tools/hq/action"
 )
 
 type service struct {
 	log *kiwi.Logger
+}
+
+type driver interface {
+	Init(sql []string)
+	Save() // XXX
+	Load() // XXX
 }
 
 // New ...

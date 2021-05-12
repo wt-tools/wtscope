@@ -6,8 +6,8 @@ import (
 	"os"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/event"
-	"github.com/wt-tools/adjutant/poll"
+	"github.com/wt-tools/hq/event"
+	"github.com/wt-tools/hq/poll"
 )
 
 func main() {

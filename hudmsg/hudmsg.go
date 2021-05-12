@@ -8,9 +8,9 @@ import (
 	"net/http"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/action"
-	"github.com/wt-tools/adjutant/poll"
-	"github.com/wt-tools/adjutant/tag"
+	"github.com/wt-tools/hq/action"
+	"github.com/wt-tools/hq/poll"
+	"github.com/wt-tools/hq/tag"
 )
 
 type service struct {

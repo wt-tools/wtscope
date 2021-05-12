@@ -2,7 +2,7 @@
 // translations.
 package locale
 
-import "github.com/wt-tools/adjutant/damage"
+import "github.com/wt-tools/hq/damage"
 
 type Translation struct {
 	Lang  Lang

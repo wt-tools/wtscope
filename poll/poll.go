@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/tag"
+	"github.com/wt-tools/hq/tag"
 )
 
 const RepeatEndlessly = -1

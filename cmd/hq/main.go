@@ -6,11 +6,11 @@ import (
 	"os"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/adjutant/config"
-	"github.com/wt-tools/adjutant/dedup"
-	"github.com/wt-tools/adjutant/hudmsg"
-	"github.com/wt-tools/adjutant/keep"
-	"github.com/wt-tools/adjutant/poll"
+	"github.com/wt-tools/hq/config"
+	"github.com/wt-tools/hq/dedup"
+	"github.com/wt-tools/hq/hudmsg"
+	"github.com/wt-tools/hq/keep"
+	"github.com/wt-tools/hq/poll"
 )
 
 func main() {

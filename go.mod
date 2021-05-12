@@ -1,4 +1,4 @@
-module github.com/wt-tools/adjutant
+module github.com/wt-tools/hq
 
 go 1.16
 
