@@ -20,6 +20,9 @@ var actionTexts = []Translation{
 	{En, action.Afire, "set afire"},
 	{Ru, action.Afire, "поджег"},
 
+	{En, action.Crashed, "has crashed."},
+	{Ru, action.Crashed, "разбился"},
+
 	{En, action.Connected, "connected"},
 	{Ru, action.Connected, "присоединился"},
 
@@ -37,7 +40,8 @@ var actionTexts = []Translation{
 
 	{Ru, action.Unknown, "разбился"}, // XXX
 
-	{En, action.Disconnected, "td! kd?NET_PLAYER_DISCONNECT_FROM_GAME"},
+	{En, action.DisconnectedRaw, "td! kd?NET_PLAYER_DISCONNECT_FROM_GAME"},
 
-	{Ru, action.LostConnect, "потерял связь"}, // XXX
+	{En, action.Disconnected, "has disconnected from the game"},
+	{Ru, action.Disconnected, "потерял связь"},
 }
