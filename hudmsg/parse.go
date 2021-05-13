@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/wt-tools/hq/action"
+	"github.com/wt-tools/hq/vehicle"
 )
 
 type (
@@ -98,7 +99,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 	}
 	var (
 		p1, p2 action.Player
-		v1, v2 action.Vehicle
+		v1, v2 vehicle.Vehicle
 		act    action.Action
 	)
 	for _, tok := range tokens {
@@ -121,12 +122,12 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				break
 			}
 		case vehicleType:
-			if v1.Type == "" {
-				v1.Type = string(tok.text)
+			if v1.Name == "" {
+				v1.Name = string(tok.text)
 				break
 			}
-			if v2.Type == "" {
-				v2.Type = string(tok.text)
+			if v2.Name == "" {
+				v2.Name = string(tok.text)
 				break
 			}
 			// XXX

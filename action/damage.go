@@ -3,17 +3,15 @@
 // isolated from logging and configuration environment.
 package action
 
+import "github.com/wt-tools/hq/vehicle"
+
 type (
 	Damage struct {
 		Action        Action
-		Vehicle       Vehicle
+		Vehicle       vehicle.Vehicle
 		Player        Player
-		TargetVehicle Vehicle
+		TargetVehicle vehicle.Vehicle
 		TargetPlayer  Player
-	}
-	Vehicle struct {
-		ID   uint
-		Type string
 	}
 )
 
