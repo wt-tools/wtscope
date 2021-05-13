@@ -9,7 +9,7 @@ import (
 
 	"github.com/grafov/kiwi"
 	"github.com/wt-tools/hq/action"
-	"github.com/wt-tools/hq/poll"
+	"github.com/wt-tools/hq/net/poll"
 	"github.com/wt-tools/hq/tag"
 )
 

@@ -7,10 +7,10 @@ import (
 
 	"github.com/grafov/kiwi"
 	"github.com/wt-tools/hq/config"
+	"github.com/wt-tools/hq/db/keep"
 	"github.com/wt-tools/hq/dedup"
 	"github.com/wt-tools/hq/hudmsg"
-	"github.com/wt-tools/hq/keep"
-	"github.com/wt-tools/hq/poll"
+	"github.com/wt-tools/hq/net/poll"
 )
 
 func main() {
