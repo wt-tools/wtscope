@@ -23,10 +23,9 @@ type (
 		Mode   string `json:"mode"`
 	}
 )
-
 type keeper interface {
-	Persist(context.Context, action.Damage)
-	Cache(context.Context, action.Damage)
+	PersistDamage(context.Context, action.Damage)
+	CacheDamage(context.Context, action.Damage)
 }
 type filter interface {
 	Important(context.Context) bool

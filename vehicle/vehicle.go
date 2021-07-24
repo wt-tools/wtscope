@@ -29,14 +29,16 @@ const (
 )
 
 type Country int // TODO учесть технику стран, не имеющих своей ветки!
+// TODO ISO для both manufacturer + operator
 const (
 	UnknownCountry Country = iota
 	US
 	DE
 	SU
 	EN
-	FR
-	IT
+	JP
 	CH
+	IT
+	FR
 	SW
 )

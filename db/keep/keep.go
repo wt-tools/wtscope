@@ -7,6 +7,7 @@ import (
 
 	"github.com/grafov/kiwi"
 	"github.com/wt-tools/hq/action"
+	"github.com/wt-tools/hq/sensor"
 )
 
 type service struct {
@@ -24,8 +25,13 @@ func New(log *kiwi.Logger) *service {
 	return &service{log}
 }
 
-func (s *service) Persist(context.Context, action.Damage) {
+func (s *service) PersistDamage(context.Context, action.Damage) {
 }
 
-func (s *service) Cache(context.Context, action.Damage) {
+func (s *service) CacheDamage(context.Context, action.Damage) {
+}
+
+// XXX
+func (s *service) PersistState(context.Context, sensor.Sensor) {
+
 }
