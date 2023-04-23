@@ -11,6 +11,8 @@ import (
 	"github.com/grafov/kiwi"
 )
 
+// XXX later
+
 type service struct {
 	log *kiwi.Logger
 }

@@ -3,8 +3,6 @@ package hudmsg
 import (
 	"context"
 	"encoding/json"
-
-	"github.com/wt-tools/wtscope/action"
 )
 
 type (
@@ -24,10 +22,6 @@ type (
 	}
 )
 
-type keeper interface {
-	PersistDamage(context.Context, action.Damage)
-	CacheDamage(context.Context, action.Damage)
-}
 type filter interface {
 	Important(context.Context) bool
 }

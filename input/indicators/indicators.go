@@ -1,6 +1,4 @@
-// Package state parses JSON data input from WT game webserver and
-// sends it for further analyzis and to storage.
-package state
+package indicators
 
 import (
 	"context"
@@ -11,7 +9,7 @@ import (
 )
 
 type service struct {
-	Messages chan state
+	Messages chan indicator
 
 	poll poller
 	conf configurator
@@ -19,11 +17,10 @@ type service struct {
 }
 
 func New(conf configurator, poll poller, log chan error) *service {
-	const name = "state"
 	return &service{
 		err:      log,
 		conf:     conf,
-		Messages: make(chan state, 3),
+		Messages: make(chan indicator, 3),
 		poll:     poll,
 	}
 }
@@ -37,20 +34,20 @@ func (s *service) log(err error) {
 func (s *service) Grab(ctx context.Context) {
 	var (
 		data []byte
-		st   state
+		ind  indicator
 		ok   bool
 		err  error
 	)
-	ret := s.poll.Add(http.MethodGet, s.conf.GamePoint("state"), poll.RepeatEndlessly, 0)
+	ret := s.poll.Add(http.MethodGet, s.conf.GamePoint("indicators"), poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-ret; !ok {
 			s.log(errChanClosed)
 			return
 		}
-		if err = json.Unmarshal(data, &st); err != nil {
+		if err = json.Unmarshal(data, &ind); err != nil {
 			s.log(err)
 			continue
 		}
-		s.Messages <- st
+		s.Messages <- ind
 	}
 }

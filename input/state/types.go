@@ -36,6 +36,39 @@ import (
 "efficiency 1, %": 0}
 */
 
+/* 23 april 23, И-180:
+{"valid": true,
+"aileron, %": 11,
+"elevator, %": 21,
+"rudder, %": 26,
+"flaps, %": 0,
+"gear, %": 100,
+"H, m": 163,
+"TAS, km/h": 0,
+"IAS, km/h": 0,
+"M": 0.00,
+"AoA, deg": -37.0,
+"AoS, deg": 22.9,
+"Ny": 0.70,
+"Vy, m/s": 0.0,
+"Wx, deg/s": -0,
+"Mfuel, kg": 138,
+"Mfuel0, kg": 280,
+"throttle 1, %": 0,
+"RPM throttle 1, %": 43,
+"mixture 1, %": 100,
+"radiator 1, %": 0,
+"compressor stage 1": 2,
+"magneto 1": 3,
+"power 1, hp": 12.0,
+"RPM 1": 529,
+"manifold pressure 1, atm": 0.96,
+"oil temp 1, C": 39,
+"pitch 1, deg": 25.0,
+"thrust 1, kgs": 66,
+"efficiency 1, %": 0}
+*/
+
 // State keeps original structure as it offered by WT
 // `GET state` call.
 type state struct {
