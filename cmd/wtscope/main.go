@@ -5,21 +5,22 @@ import (
 	"net/http"
 	"os"
 
+	"wt-tools/wtscope/config"
+	"wt-tools/wtscope/db/keep"
+	"wt-tools/wtscope/input/hudmsg"
+	"wt-tools/wtscope/input/state"
+	"wt-tools/wtscope/net/dedup"
+	"wt-tools/wtscope/net/poll"
+
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/config"
-	"github.com/wt-tools/hq/db/keep"
-	"github.com/wt-tools/hq/dedup"
-	"github.com/wt-tools/hq/input/hudmsg"
-	"github.com/wt-tools/hq/input/state"
-	"github.com/wt-tools/hq/net/poll"
 )
 
 func main() {
 	ctx := context.Background()
 	kiwi.SinkTo(os.Stdout, kiwi.AsLogfmt()).Start()
 	log := kiwi.New()
-	log.Log("status", "adjutant at your service", "config", "xxx")
 	conf := config.New()
+	log.Log("status", "WTScope started")
 	localStorage := keep.New(log)
 	defaultPolling := poll.New(log, http.DefaultClient)
 	hudmsgDedup := dedup.New(log)
@@ -30,13 +31,13 @@ func main() {
 	go stateWorker.Grab(ctx)
 	for {
 		select {
-		case ev := hudmsgWorker.LatestAction(ctx):
+		case ev := <-hudmsgWorker.Actions(ctx):
 			if ev.Damage != nil {
 				if ev.Damage.Player.Name == conf.CurrentPlayer() || ev.Damage.TargetPlayer.Name == conf.CurrentPlayer() {
 					log.Log("damage", ev.Origin, "player tank", ev.Damage.Vehicle.Name, "opponent tank", ev.Damage.TargetVehicle.Name, "player", ev.Damage.Player.Name, "target player", ev.Damage.TargetPlayer.Name, "?enemy", ev.Enemy)
 				}
 			}
-		case st := stateWorker.LatestState(ctx):
+		case st := <-stateWorker.Get(ctx):
 			log.Log("state", st)
 
 		}

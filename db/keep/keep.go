@@ -4,10 +4,10 @@ package keep
 
 import (
 	"context"
+	"wt-tools/wtscope/action"
+	"wt-tools/wtscope/sensor"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/action"
-	"github.com/wt-tools/hq/sensor"
 )
 
 type service struct {
@@ -33,5 +33,4 @@ func (s *service) CacheDamage(context.Context, action.Damage) {
 
 // XXX
 func (s *service) PersistState(context.Context, sensor.Sensor) {
-
 }

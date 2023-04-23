@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 	"os"
+	"wt-tools/wtscope/event"
+	"wt-tools/wtscope/poll"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/event"
-	"github.com/wt-tools/hq/poll"
 )
 
 func main() {

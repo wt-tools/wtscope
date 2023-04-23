@@ -3,7 +3,7 @@
 // isolated from logging and configuration environment.
 package action
 
-import "github.com/wt-tools/hq/vehicle"
+import "wt-tools/wtscope/vehicle"
 
 type (
 	Damage struct {

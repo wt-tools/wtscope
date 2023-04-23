@@ -2,15 +2,14 @@ package config
 
 import "fmt"
 
-type local struct {
-}
+type local struct{}
 
 func New() *local {
 	return &local{}
 }
 
 func (l *local) CurrentPlayer() string {
-	return "ZenAviator"
+	return "ZenAviator" // for development
 }
 
 func (l *local) GamePoint(path string) string {

@@ -6,11 +6,11 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"wt-tools/wtscope/action"
+	"wt-tools/wtscope/net/poll"
+	"wt-tools/wtscope/tag"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/action"
-	"github.com/wt-tools/hq/net/poll"
-	"github.com/wt-tools/hq/tag"
 )
 
 type service struct {
@@ -70,6 +70,6 @@ func (s *service) Grab(ctx context.Context) {
 
 var latest = make(chan action.GeneralAction, 3) // XXX
 
-func (s *service) LatestAction(ctx context.Context) action.GeneralAction {
-	return <-latest
+func (s *service) Actions(ctx context.Context) chan action.GeneralAction {
+	return latest
 }

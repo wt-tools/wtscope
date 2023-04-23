@@ -1,6 +1,6 @@
 package locale
 
-import "github.com/wt-tools/hq/action"
+import "wt-tools/wtscope/action"
 
 var actionTexts = []Translation{
 	{En, action.Unknown, "unknown"},

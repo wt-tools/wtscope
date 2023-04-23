@@ -8,8 +8,9 @@ import (
 	"sync"
 	"time"
 
+	"wt-tools/wtscope/tag"
+
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/tag"
 )
 
 const RepeatEndlessly = -1

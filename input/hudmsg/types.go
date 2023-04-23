@@ -3,8 +3,7 @@ package hudmsg
 import (
 	"context"
 	"encoding/json"
-
-	"github.com/wt-tools/hq/action"
+	"wt-tools/wtscope/action"
 )
 
 type (
@@ -23,6 +22,7 @@ type (
 		Mode   string `json:"mode"`
 	}
 )
+
 type keeper interface {
 	PersistDamage(context.Context, action.Damage)
 	CacheDamage(context.Context, action.Damage)

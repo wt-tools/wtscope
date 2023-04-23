@@ -2,8 +2,7 @@ package state
 
 import (
 	"context"
-
-	"github.com/wt-tools/hq/sensor"
+	"wt-tools/wtscope/sensor"
 )
 
 /* example:

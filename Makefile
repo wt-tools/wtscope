@@ -1,13 +1,12 @@
 # Optionally set these args as environment vars in the shell. You
 # could also pass them as parameters of `make`.
 # For example: make build CMD=console
-CMD?=hq
+CMD?=wtscope
 FLAGS?=-v
 CLEANUP?=
 
 # Requires GNU grep
 APP:=$(shell grep -Po '^module\s+\K.*' go.mod)
-
 
 default: lint test
 

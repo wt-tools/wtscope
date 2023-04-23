@@ -6,10 +6,10 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+	"wt-tools/wtscope/net/poll"
+	"wt-tools/wtscope/tag"
 
 	"github.com/grafov/kiwi"
-	"github.com/wt-tools/hq/net/poll"
-	"github.com/wt-tools/hq/tag"
 )
 
 type service struct {
@@ -32,7 +32,7 @@ func New(log *kiwi.Logger, conf configurator, keep keeper, poll poller) *service
 var latest = make(chan state, 3) // XXX
 
 func (s *service) Get(ctx context.Context) chan state {
-
+	return nil
 }
 
 func (s *service) Grab(ctx context.Context) {
