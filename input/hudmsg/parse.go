@@ -4,8 +4,9 @@ package hudmsg
 
 import (
 	"fmt"
-	"wt-tools/wtscope/action"
-	"wt-tools/wtscope/vehicle"
+
+	"github.com/wt-tools/wtscope/action"
+	"github.com/wt-tools/wtscope/vehicle"
 )
 
 type (

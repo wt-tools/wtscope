@@ -7,10 +7,6 @@ import (
 	"net/http"
 	"sync"
 	"time"
-
-	"wt-tools/wtscope/tag"
-
-	"github.com/grafov/kiwi"
 )
 
 const RepeatEndlessly = -1
@@ -19,13 +15,15 @@ type service struct {
 	sync.Mutex
 	queue   []task
 	current int
-
-	httpc httper
-	log   *kiwi.Logger
+	httpc   httper
+	err     chan error
 }
 
-func New(log *kiwi.Logger, c httper) *service {
-	return &service{log: log, httpc: c}
+func New(c httper, logger chan error) *service {
+	return &service{
+		httpc: c,
+		err:   logger,
+	}
 }
 
 // Do tasks syncrhonously.
@@ -63,10 +61,16 @@ func (s *service) Do() {
 		}
 		s.Unlock()
 		if data, err = s.callEndpoint(t); err != nil {
-			s.log.Log(tag.Error, err)
+			s.log(err)
 			continue
 		}
 		t.ret <- data
+	}
+}
+
+func (s *service) log(err error) {
+	if s.err != nil {
+		s.err <- err
 	}
 }
 

@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"os"
 
-	"wt-tools/wtscope/config"
-	"wt-tools/wtscope/db/keep"
-	"wt-tools/wtscope/input/hudmsg"
-	"wt-tools/wtscope/input/state"
-	"wt-tools/wtscope/net/dedup"
-	"wt-tools/wtscope/net/poll"
+	"github.com/wt-tools/wtscope/config"
+	"github.com/wt-tools/wtscope/db/keep"
+	"github.com/wt-tools/wtscope/input/hudmsg"
+	"github.com/wt-tools/wtscope/input/state"
+	"github.com/wt-tools/wtscope/net/dedup"
+	"github.com/wt-tools/wtscope/net/poll"
 
 	"github.com/grafov/kiwi"
 )
@@ -22,7 +22,7 @@ func main() {
 	conf := config.New()
 	log.Log("status", "WTScope started")
 	localStorage := keep.New(log)
-	defaultPolling := poll.New(log, http.DefaultClient)
+	defaultPolling := poll.New(http.DefaultClient, nil) // XXX
 	hudmsgDedup := dedup.New(log)
 	hudmsgWorker := hudmsg.New(log, conf, localStorage, defaultPolling, hudmsgDedup)
 	stateWorker := state.New(log, conf, localStorage, defaultPolling)

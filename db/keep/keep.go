@@ -4,8 +4,9 @@ package keep
 
 import (
 	"context"
-	"wt-tools/wtscope/action"
-	"wt-tools/wtscope/sensor"
+
+	"github.com/wt-tools/wtscope/action"
+	"github.com/wt-tools/wtscope/sensor"
 
 	"github.com/grafov/kiwi"
 )

@@ -3,7 +3,8 @@ package hudmsg
 import (
 	"context"
 	"encoding/json"
-	"wt-tools/wtscope/action"
+
+	"github.com/wt-tools/wtscope/action"
 )
 
 type (

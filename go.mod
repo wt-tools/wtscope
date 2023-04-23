@@ -1,4 +1,4 @@
-module wt-tools/wtscope
+module github.com/wt-tools/wtscope
 
 go 1.20
 

@@ -6,8 +6,9 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
-	"wt-tools/wtscope/net/poll"
-	"wt-tools/wtscope/tag"
+
+	"github.com/wt-tools/wtscope/net/poll"
+	"github.com/wt-tools/wtscope/tag"
 
 	"github.com/grafov/kiwi"
 )
