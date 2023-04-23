@@ -15,7 +15,6 @@ import (
 )
 
 type service struct {
-	keep  keeper
 	poll  poller
 	filt  filter
 	dedup deduplicator
@@ -23,12 +22,11 @@ type service struct {
 	log   *kiwi.Logger
 }
 
-func New(log *kiwi.Logger, conf configurator, keep keeper, poll poller, dedup deduplicator) *service {
+func New(log *kiwi.Logger, conf configurator, poll poller, dedup deduplicator) *service {
 	const name = "hudmsg"
 	return &service{
 		log:   log.Fork().With(tag.Service, name),
 		conf:  conf,
-		keep:  keep,
 		poll:  poll,
 		dedup: dedup,
 	}

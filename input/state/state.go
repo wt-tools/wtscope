@@ -1,4 +1,4 @@
-U// Package state parses JSON data input from WT game webserver and
+// Package state parses JSON data input from WT game webserver and
 // sends it for further analyzis and to storage.
 package state
 
@@ -11,17 +11,19 @@ import (
 )
 
 type service struct {
-	poll poller
-	conf configurator
-	err  chan error
+	poll   poller
+	conf   configurator
+	latest chan state
+	err    chan error
 }
 
 func New(conf configurator, poll poller, log chan error) *service {
 	const name = "state"
 	return &service{
-		err:  log,
-		conf: conf,
-		poll: poll,
+		err:    log,
+		conf:   conf,
+		latest: make(chan state, 3),
+		poll:   poll,
 	}
 }
 
@@ -31,11 +33,9 @@ func (s *service) log(err error) {
 	}
 }
 
-var latest = make(chan state, 3) // XXX
-
-// func (s *service) LatestState(ctx context.Context) state {
-//	return <-latest
-// }
+func (s *service) Actions(ctx context.Context) chan state {
+	return s.latest
+}
 
 func (s *service) Grab(ctx context.Context) {
 	var (
@@ -54,6 +54,6 @@ func (s *service) Grab(ctx context.Context) {
 			s.log(err)
 			continue
 		}
-		// latest <- state // XXX
+		s.latest <- st
 	}
 }
