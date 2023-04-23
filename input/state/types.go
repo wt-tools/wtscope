@@ -2,8 +2,6 @@ package state
 
 import (
 	"context"
-
-	"github.com/wt-tools/wtscope/sensor"
 )
 
 /* example:
@@ -83,13 +81,11 @@ type state struct {
 	Efficiency1  uint8   `json:"efficiency 1, %"`
 	Efficiency2  uint8   `json:"efficiency 2, %"`
 }
-type keeper interface {
-	PersistState(context.Context, sensor.Sensor)
-}
 type filter interface {
 	Important(context.Context) bool
 }
 type poller interface {
+	Do()
 	Add(string, string, int, int) chan []byte
 }
 type configurator interface {

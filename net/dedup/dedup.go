@@ -2,15 +2,12 @@ package dedup
 
 import (
 	"time"
-
-	"github.com/grafov/kiwi"
 )
 
 type (
 	duplicate struct {
 		prev, latest uint
 		prevAt       time.Time
-		log          *kiwi.Logger
 	}
 	item struct {
 		val uint
@@ -18,8 +15,8 @@ type (
 	}
 )
 
-func New(log *kiwi.Logger) *duplicate {
-	return &duplicate{log: log}
+func New() *duplicate {
+	return &duplicate{}
 }
 
 func (s *duplicate) Exists(val uint) bool {
