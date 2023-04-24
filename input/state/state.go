@@ -10,7 +10,7 @@ import (
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
-type service struct {
+type Service struct {
 	Messages chan state
 
 	poll poller
@@ -18,9 +18,9 @@ type service struct {
 	err  chan error
 }
 
-func New(conf configurator, poll poller, log chan error) *service {
+func New(conf configurator, poll poller, log chan error) *Service {
 	const name = "state"
-	return &service{
+	return &Service{
 		err:      log,
 		conf:     conf,
 		Messages: make(chan state, 3),
@@ -28,13 +28,13 @@ func New(conf configurator, poll poller, log chan error) *service {
 	}
 }
 
-func (s *service) log(err error) {
+func (s *Service) log(err error) {
 	if s.err != nil {
 		s.err <- err
 	}
 }
 
-func (s *service) Grab(ctx context.Context) {
+func (s *Service) Grab(ctx context.Context) {
 	var (
 		data []byte
 		st   state

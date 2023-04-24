@@ -14,7 +14,7 @@ import (
 	"github.com/grafov/kiwi"
 )
 
-type service struct {
+type Service struct {
 	Messages chan action.GeneralAction
 
 	poll  poller
@@ -24,9 +24,9 @@ type service struct {
 	log   *kiwi.Logger
 }
 
-func New(log *kiwi.Logger, conf configurator, poll poller, dedup deduplicator) *service {
+func New(log *kiwi.Logger, conf configurator, poll poller, dedup deduplicator) *Service {
 	const name = "hudmsg"
-	return &service{
+	return &Service{
 		log:      log.Fork().With(tag.Service, name),
 		conf:     conf,
 		poll:     poll,
@@ -35,7 +35,7 @@ func New(log *kiwi.Logger, conf configurator, poll poller, dedup deduplicator) *
 	}
 }
 
-func (s *service) Grab(ctx context.Context) {
+func (s *Service) Grab(ctx context.Context) {
 	var (
 		data []byte
 		raw  Raw
