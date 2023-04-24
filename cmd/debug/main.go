@@ -21,7 +21,7 @@ func main() {
 	log := kiwi.New()
 	conf := config.New()
 	log.Log("status", "WTScope started")
-	defaultPolling := poll.New(http.DefaultClient, nil) // XXX
+	defaultPolling := poll.New(http.DefaultClient, nil, 3, 2) // XXX
 	hudmsgDedup := dedup.New()
 	errlog := make(chan error, 16)
 	hudmsgSvc := hudmsg.New(log, conf, defaultPolling, hudmsgDedup)

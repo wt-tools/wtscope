@@ -11,39 +11,38 @@ import (
 
 const RepeatEndlessly = -1
 
-type service struct {
+type Service struct {
 	sync.Mutex
-	queue   []task
-	current int
-	httpc   httper
-	err     chan error
+	queue                      []task
+	current                    int
+	httpc                      httper
+	loopDelay, emptyQueueDelay time.Duration
+	err                        chan error
 }
 
-func New(c httper, logger chan error) *service {
-	return &service{
-		httpc: c,
-		err:   logger,
+func New(c httper, logger chan error, loopDelay time.Duration, emptyQueueDelay time.Duration) *Service {
+	return &Service{
+		httpc:           c,
+		err:             logger,
+		loopDelay:       loopDelay,
+		emptyQueueDelay: emptyQueueDelay,
 	}
 }
 
 // Do tasks syncrhonously.
-func (s *service) Do() {
-	const (
-		loopDelay       = 5 * time.Second
-		emptyQueueDelay = 3 * time.Second
-	)
+func (s *Service) Do() {
 	var (
 		data []byte
 		err  error
 	)
 	for {
-		time.Sleep(loopDelay)
+		time.Sleep(s.loopDelay)
 		s.Lock()
 		var t task
 		{
 			if len(s.queue) == 0 {
 				s.Unlock()
-				time.Sleep(emptyQueueDelay)
+				time.Sleep(s.emptyQueueDelay)
 				continue
 			}
 			t = s.queue[s.current]
@@ -68,13 +67,13 @@ func (s *service) Do() {
 	}
 }
 
-func (s *service) log(err error) {
+func (s *Service) log(err error) {
 	if s.err != nil {
 		s.err <- err
 	}
 }
 
-func (s *service) callEndpoint(t task) ([]byte, error) {
+func (s *Service) callEndpoint(t task) ([]byte, error) {
 	const requestTimeout = 2 * time.Second
 	var (
 		req *http.Request
@@ -100,7 +99,7 @@ func (s *service) callEndpoint(t task) ([]byte, error) {
 // the task still remains in the queue until `repeat` count decreased
 // to 0. For endless repeat set `repeat` to -1. By default no retries
 // for the request, set `retry` to value greater than 0.
-func (s *service) Add(method, url string, repeat, retry int) chan []byte {
+func (s *Service) Add(method, url string, repeat, retry int) chan []byte {
 	if repeat == 0 {
 		repeat = 1
 	}
