@@ -69,51 +69,74 @@ import (
 "efficiency 1, %": 0}
 */
 
+/* sample from april 2023 I-180:
+{"valid": true,
+"aileron, %": 0,
+"elevator, %": -1,
+"rudder, %": 0,
+"flaps, %": 0,
+"gear, %": 100,
+"H, m": 175,
+"TAS, km/h": 311,
+"IAS, km/h": 308,
+"M": 0.25,
+"AoA, deg": 1.6,
+"AoS, deg": 0.0,
+"Ny": 1.02,
+"Vy, m/s": 3.2,
+"Wx, deg/s": 0,
+"Mfuel, kg": 138,
+"Mfuel0, kg": 280,
+"throttle 1, %": 100,
+"RPM throttle 1, %": 100,
+"mixture 1, %": 100,
+"radiator 1, %": 0,
+"compressor stage 1": 1,
+"magneto 1": 3,
+"power 1, hp": 1002.9,
+"RPM 1": 2329,
+"manifold pressure 1, atm": 1.19,
+"oil temp 1, C": 51,
+"pitch 1, deg": 29.6,
+"thrust 1, kgs": 687,
+"efficiency 1, %": 78}
+*/
+
 // State keeps original structure as it offered by WT
 // `GET state` call.
 type state struct {
-	Valid        bool    `json:"valid"`
-	Aileron      uint8   `json:"aileron, %"`
-	Elevator     uint8   `json:"elevator, %"`
-	Rudder       uint8   `json:"rudder, %"`
-	Flaps        uint8   `json:"flaps, %"`
-	Gear         uint8   `json:"gear, %"`
-	H            uint    `json:"H, m"`
-	TAS          uint    `json:"TAS, km/h"`
-	IAS          uint    `json:"IAS, km/h"`
-	M            float64 `json:"M"`
-	AoA          float64 `json:"AoA, deg"`
-	AoS          float64 `json:"AoS, deg"`
-	Ny           float64 `json:"Ny"`
-	Vy           float64 `json:"Vy"`
-	Wx           int8    `json:"Wx, deg/s"`
-	Mfuel        int     `json:"Mfuel, kg"`
-	Mfuel0       int     `json:"Mfuel0, kg"`
-	Throttle1    uint8   `json:"throttle 1, %"`
-	Throttle2    uint8   `json:"throttle 2, %"`
-	ThrottleRPM1 uint8   `json:"RPM throttle 1, %"`
-	ThrottleRPM2 uint8   `json:"RPM throttle 2, %"`
-	Radiator1    uint8   `json:"radiator 1, %"`
-	Radiator2    uint8   `json:"radiator 2, %"`
-	Magneto1     uint8   `json:"magneto 1"`
-	Magneto2     uint8   `json:"magneto 2"`
-	Power1       float64 `json:"power 1, hp"`
-	Power2       float64 `json:"power 2, hp"`
-	RPM1         int     `json:"RPM 1"`
-	RPM2         int     `json:"RPM 2"`
-	Pressure1    float64 `json:"manifold pressure 1, atm"`
-	Pressure2    float64 `json:"manifold pressure 2, atm"`
-	WaterTemp1   int     `json:"water temp 1, C"`
-	WaterTemp2   int     `json:"water temp 2, C"`
-	OilTemp1     int     `json:"oil temp 1, C"`
-	OilTemp2     int     `json:"oil temp 2, C"`
-	Pitch1       float64 `json:"pitch 1, deg"`
-	Pitch2       float64 `json:"pitch 2, deg"`
-	Thrust1      int     `json:"thrust 1, kgs"`
-	Thrust2      int     `json:"thrust 2, kgs"`
-	Efficiency1  uint8   `json:"efficiency 1, %"`
-	Efficiency2  uint8   `json:"efficiency 2, %"`
+	Valid                bool    `json:"valid"`
+	Aileron              int     `json:"aileron, %"`
+	Elevator             int     `json:"elevator, %"`
+	Rudder               int     `json:"rudder, %"`
+	Flaps                int     `json:"flaps, %"`
+	Gear                 int     `json:"gear, %"`
+	HM                   int     `json:"H, m"`
+	TASKmH               int     `json:"TAS, km/h"`
+	IASKmH               int     `json:"IAS, km/h"`
+	M                    float64 `json:"M"`
+	AoADeg               float64 `json:"AoA, deg"`
+	AoSDeg               float64 `json:"AoS, deg"`
+	Ny                   float64 `json:"Ny"`
+	VyMS                 float64 `json:"Vy, m/s"`
+	WxDegS               int     `json:"Wx, deg/s"`
+	MfuelKg              int     `json:"Mfuel, kg"`
+	Mfuel0Kg             int     `json:"Mfuel0, kg"`
+	Throttle1            int     `json:"throttle 1, %"`
+	RPMThrottle1         int     `json:"RPM throttle 1, %"`
+	Mixture1             int     `json:"mixture 1, %"`
+	Radiator1            int     `json:"radiator 1, %"`
+	CompressorStage1     int     `json:"compressor stage 1"`
+	Magneto1             int     `json:"magneto 1"`
+	Power1Hp             float64 `json:"power 1, hp"`
+	RPM1                 int     `json:"RPM 1"`
+	ManifoldPressure1Atm float64 `json:"manifold pressure 1, atm"`
+	OilTemp1C            int     `json:"oil temp 1, C"`
+	Pitch1Deg            float64 `json:"pitch 1, deg"`
+	Thrust1Kgs           int     `json:"thrust 1, kgs"`
+	Efficiency1          int     `json:"efficiency 1, %"`
 }
+
 type filter interface {
 	Important(context.Context) bool
 }
