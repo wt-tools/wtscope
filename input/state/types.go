@@ -69,39 +69,6 @@ import (
 "efficiency 1, %": 0}
 */
 
-/* sample from april 2023 I-180:
-{"valid": true,
-"aileron, %": 0,
-"elevator, %": -1,
-"rudder, %": 0,
-"flaps, %": 0,
-"gear, %": 100,
-"H, m": 175,
-"TAS, km/h": 311,
-"IAS, km/h": 308,
-"M": 0.25,
-"AoA, deg": 1.6,
-"AoS, deg": 0.0,
-"Ny": 1.02,
-"Vy, m/s": 3.2,
-"Wx, deg/s": 0,
-"Mfuel, kg": 138,
-"Mfuel0, kg": 280,
-"throttle 1, %": 100,
-"RPM throttle 1, %": 100,
-"mixture 1, %": 100,
-"radiator 1, %": 0,
-"compressor stage 1": 1,
-"magneto 1": 3,
-"power 1, hp": 1002.9,
-"RPM 1": 2329,
-"manifold pressure 1, atm": 1.19,
-"oil temp 1, C": 51,
-"pitch 1, deg": 29.6,
-"thrust 1, kgs": 687,
-"efficiency 1, %": 78}
-*/
-
 // State keeps original structure as it offered by WT
 // `GET state` call.
 type state struct {
@@ -135,6 +102,14 @@ type state struct {
 	Pitch1Deg            float64 `json:"pitch 1, deg"`
 	Thrust1Kgs           int     `json:"thrust 1, kgs"`
 	Efficiency1          int     `json:"efficiency 1, %"`
+}
+
+// TODO autogen it
+func mapkeys(m map[string]interface{}) state {
+	return state{
+		IASKmH: int(m["IAS, km/h"].(float64)),
+		TASKmH: int(m["TAS, km/h"].(float64)),
+	}
 }
 
 type filter interface {

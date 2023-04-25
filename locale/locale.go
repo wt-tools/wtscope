@@ -1,40 +1,43 @@
 // Package locale defines index for tokens alongside with their
 // translations.
-// package locale
+package locale
 
-// import "github.com/wt-tools/wtscope/damage"
+import "github.com/wt-tools/wtscope/action"
 
-// type Translation struct {
-//	Lang  Lang
-//	Index damage.Action
-//	Value string
-// }
+// import "github.com/wt-tools/wtscope/action"
 
-// var (
-//	translationByIndex = make(map[Lang]map[damage.Action]string)
-//	translationByText  = make(map[Lang]map[string]damage.Action)
-// )
+// broken
+type Translation struct {
+	Lang  Lang
+	Index action.Damage // broken
+	Value string
+}
 
-// func init() {
-//	for _, v := range actionTexts {
-//		if _, ok := translationByIndex[v.Lang]; !ok {
-//			translationByIndex[v.Lang] = make(map[damage.Action]string)
-//		}
-//		translationByIndex[v.Lang][v.Index] = v.Value
-//		if _, ok := translationByText[v.Lang]; !ok {
-//			translationByIndex[v.Lang] = make(map[damage.Action]string)
-//		}
-//		translationByText[v.Lang][v.Value] = v.Index
-//	}
-// }
+var (
+	translationByIndex = make(map[Lang]map[action.Damage]string)
+	translationByText  = make(map[Lang]map[string]action.Damage)
+)
 
-// // ActionText gets text of damage message by its index.
-// func ActionText(lang Lang, index damage.Action) string {
-//	return translationByIndex[lang][index]
-// }
+func init() {
+	for _, v := range actionTexts {
+		if _, ok := translationByIndex[v.Lang]; !ok {
+			translationByIndex[v.Lang] = make(map[action.Damage]string)
+		}
+		translationByIndex[v.Lang][v.Index] = v.Value
+		if _, ok := translationByText[v.Lang]; !ok {
+			translationByIndex[v.Lang] = make(map[action.Damage]string)
+		}
+		translationByText[v.Lang][v.Value] = v.Index
+	}
+}
 
-// // ActionIndex gets index of damage message by its text for provided
-// // language.
-// func ActionIndex(lang Lang, text string) damage.Action {
-//	return translationByText[lang][text]
-// }
+// ActionText gets text of damage message by its index.
+func ActionText(lang Lang, index action.Damage) string {
+	return translationByIndex[lang][index]
+}
+
+// ActionIndex gets index of damage message by its text for provided
+// language.
+func ActionIndex(lang Lang, text string) action.Damage {
+	return translationByText[lang][text]
+}

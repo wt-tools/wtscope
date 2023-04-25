@@ -37,7 +37,6 @@ func (s *Service) log(err error) {
 func (s *Service) Grab(ctx context.Context) {
 	var (
 		data []byte
-		st   state
 		ok   bool
 		err  error
 	)
@@ -47,10 +46,17 @@ func (s *Service) Grab(ctx context.Context) {
 			s.log(errChanClosed)
 			return
 		}
-		if err = json.Unmarshal(data, &st); err != nil {
+		// The state returned by WT has tags with commas.
+		// This is the problem:
+		// https://github.com/golang/go/issues/15000 Packages
+		// like easyjson also can't do it. If you know the
+		// package that supports JSON keys with commas, let me
+		// know.
+		m := map[string]interface{}{}
+		if err = json.Unmarshal(data, &m); err != nil {
 			s.log(err)
 			continue
 		}
-		s.Messages <- st
+		s.Messages <- mapkeys(m)
 	}
 }
