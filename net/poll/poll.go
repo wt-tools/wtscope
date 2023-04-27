@@ -13,19 +13,20 @@ const RepeatEndlessly = -1
 
 type Service struct {
 	sync.Mutex
-	queue                      []task
-	current                    int
-	httpc                      httper
-	loopDelay, emptyQueueDelay time.Duration
-	err                        chan error
+	queue          []task
+	current        int
+	httpc          httper
+	loopDelay      time.Duration
+	onProblemDelay time.Duration
+	err            chan error
 }
 
-func New(c httper, logger chan error, loopDelay time.Duration, emptyQueueDelay time.Duration) *Service {
+func New(c httper, logger chan error, loopDelay time.Duration, onProblemDelay time.Duration) *Service {
 	return &Service{
-		httpc:           c,
-		err:             logger,
-		loopDelay:       loopDelay,
-		emptyQueueDelay: emptyQueueDelay,
+		httpc:          c,
+		err:            logger,
+		loopDelay:      loopDelay,
+		onProblemDelay: onProblemDelay,
 	}
 }
 
@@ -42,7 +43,7 @@ func (s *Service) Do() {
 		{
 			if len(s.queue) == 0 {
 				s.Unlock()
-				time.Sleep(s.emptyQueueDelay)
+				time.Sleep(s.onProblemDelay)
 				continue
 			}
 			t = s.queue[s.current]
@@ -61,6 +62,7 @@ func (s *Service) Do() {
 		s.Unlock()
 		if data, err = s.callEndpoint(t); err != nil {
 			s.log(err)
+			time.Sleep(s.onProblemDelay)
 			continue
 		}
 		t.ret <- data
