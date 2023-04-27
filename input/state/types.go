@@ -66,36 +66,36 @@ package state
 */
 
 const (
-	Valid                = "valid"
-	Aileron              = "aileron, %"
-	Elevator             = "elevator, %"
-	Rudder               = "rudder, %"
-	Flaps                = "flaps, %"
-	Gear                 = "gear, %"
-	HM                   = "H, m"
-	TASKmH               = "TAS, km/h"
-	IASKmH               = "IAS, km/h"
-	M                    = "M"
-	AoADeg               = "AoA, deg"
-	AoSDeg               = "AoS, deg"
-	Ny                   = "Ny"
-	VyMS                 = "Vy, m/s"
-	WxDegS               = "Wx, deg/s"
-	MfuelKg              = "Mfuel, kg"
-	Mfuel0Kg             = "Mfuel0, kg"
-	Throttle1            = "throttle 1, %"
-	RPMThrottle1         = "RPM throttle 1, %"
-	Mixture1             = "mixture 1, %"
-	Radiator1            = "radiator 1, %"
-	CompressorStage1     = "compressor stage 1"
-	Magneto1             = "magneto 1"
-	Power1Hp             = "power 1, hp"
-	RPM1                 = "RPM 1"
-	ManifoldPressure1Atm = "manifold pressure 1, atm"
-	OilTemp1C            = "oil temp 1, C"
-	Pitch1Deg            = "pitch 1, deg"
-	Thrust1Kgs           = "thrust 1, kgs"
-	Efficiency1          = "efficiency 1, %"
+	Valid                = "valid"                    // bool
+	Aileron              = "aileron, %"               // int
+	Elevator             = "elevator, %"              // int
+	Rudder               = "rudder, %"                // int
+	Flaps                = "flaps, %"                 // int
+	Gear                 = "gear, %"                  // int
+	HM                   = "H, m"                     // int
+	TASKmH               = "TAS, km/h"                // int
+	IASKmH               = "IAS, km/h"                // int
+	M                    = "M"                        // float64
+	AoADeg               = "AoA, deg"                 // float64
+	AoSDeg               = "AoS, deg"                 // float64
+	Ny                   = "Ny"                       // float64
+	VyMS                 = "Vy, m/s"                  // float64
+	WxDegS               = "Wx, deg/s"                // int
+	MfuelKg              = "Mfuel, kg"                // int
+	Mfuel0Kg             = "Mfuel0, kg"               // int
+	Throttle1            = "throttle 1, %"            // int
+	RPMThrottle1         = "RPM throttle 1, %"        // int
+	Mixture1             = "mixture 1, %"             // int
+	Radiator1            = "radiator 1, %"            // int
+	CompressorStage1     = "compressor stage 1"       // int
+	Magneto1             = "magneto 1"                // int
+	Power1Hp             = "power 1, hp"              // float64
+	RPM1                 = "RPM 1"                    // int
+	ManifoldPressure1Atm = "manifold pressure 1, atm" // float64
+	OilTemp1C            = "oil temp 1, C"            // int
+	Pitch1Deg            = "pitch 1, deg"             // float64
+	Thrust1Kgs           = "thrust 1, kgs"            // int
+	Efficiency1          = "efficiency 1, %"          // int
 )
 
 type poller interface {
