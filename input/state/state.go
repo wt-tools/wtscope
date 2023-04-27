@@ -4,15 +4,16 @@ package state
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 
+	"github.com/valyala/fastjson"
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
 type Service struct {
-	Messages chan state
+	Messages chan *fastjson.Value
 
+	p    fastjson.Parser
 	poll poller
 	conf configurator
 	err  chan error
@@ -23,7 +24,7 @@ func New(conf configurator, poll poller, log chan error) *Service {
 	return &Service{
 		err:      log,
 		conf:     conf,
-		Messages: make(chan state, 3),
+		Messages: make(chan *fastjson.Value, 3),
 		poll:     poll,
 	}
 }
@@ -46,17 +47,11 @@ func (s *Service) Grab(ctx context.Context) {
 			s.log(errChanClosed)
 			return
 		}
-		// The state returned by WT has tags with commas.
-		// This is the problem:
-		// https://github.com/golang/go/issues/15000 Packages
-		// like easyjson also can't do it. If you know the
-		// package that supports JSON keys with commas, let me
-		// know.
-		m := map[string]interface{}{}
-		if err = json.Unmarshal(data, &m); err != nil {
+		var v *fastjson.Value
+		if v, err = s.p.ParseBytes(data); err != nil {
 			s.log(err)
 			continue
 		}
-		s.Messages <- mapkeys(m)
+		s.Messages <- v
 	}
 }
