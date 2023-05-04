@@ -98,10 +98,6 @@ const (
 	Efficiency1          = "efficiency 1, %"          // int
 )
 
-type poller interface {
-	Do()
-	Add(string, string, int, int) chan []byte
-}
 type configurator interface {
 	GamePoint(string) string
 }

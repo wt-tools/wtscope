@@ -129,9 +129,6 @@ type indicator struct {
 	Weapon3            float64 `json:"weapon3"`
 }
 
-type poller interface {
-	Add(string, string, int, int) chan []byte
-}
 type deduplicator interface {
 	Exists(uint) bool
 }

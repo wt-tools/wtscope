@@ -9,11 +9,15 @@ import (
 	"time"
 )
 
+type httper interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 const RepeatEndlessly = -1
 
 type Service struct {
 	sync.Mutex
-	queue          []task
+	queue          []Task
 	current        int
 	httpc          httper
 	loopDelay      time.Duration
@@ -39,7 +43,7 @@ func (s *Service) Do() {
 	for {
 		time.Sleep(s.loopDelay)
 		s.Lock()
-		var t task
+		var t Task
 		{
 			if len(s.queue) == 0 {
 				s.Unlock()
@@ -75,7 +79,7 @@ func (s *Service) log(err error) {
 	}
 }
 
-func (s *Service) callEndpoint(t task) ([]byte, error) {
+func (s *Service) callEndpoint(t Task) ([]byte, error) {
 	const requestTimeout = 2 * time.Second
 	var (
 		req *http.Request
@@ -101,16 +105,16 @@ func (s *Service) callEndpoint(t task) ([]byte, error) {
 // the task still remains in the queue until `repeat` count decreased
 // to 0. For endless repeat set `repeat` to -1. By default no retries
 // for the request, set `retry` to value greater than 0.
-func (s *Service) Add(method, url string, repeat, retry int) chan []byte {
+func (s *Service) Add(method, url string, repeat, retry int) Task {
 	if repeat == 0 {
 		repeat = 1
 	}
 	if retry <= 0 {
 		retry = 1
 	}
-	t := task{method, url, repeat, retry, make(chan []byte, 1)}
+	t := Task{method, url, repeat, retry, make(chan []byte, 1)}
 	s.Lock()
 	s.queue = append(s.queue, t)
 	s.Unlock()
-	return t.ret
+	return t
 }

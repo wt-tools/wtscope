@@ -25,9 +25,6 @@ type (
 type filter interface {
 	Important(context.Context) bool
 }
-type poller interface {
-	Add(string, string, int, int) chan []byte
-}
 type deduplicator interface {
 	Exists(uint) bool
 }

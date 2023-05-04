@@ -14,18 +14,18 @@ type Service struct {
 	Messages chan *fastjson.Value
 
 	p    fastjson.Parser
-	poll poller
+	poll *poll.Service
 	conf configurator
 	err  chan error
 }
 
-func New(conf configurator, poll poller, log chan error) *Service {
+func New(conf configurator, pollsvc *poll.Service, log chan error) *Service {
 	const name = "state"
 	return &Service{
 		err:      log,
 		conf:     conf,
 		Messages: make(chan *fastjson.Value, 3),
-		poll:     poll,
+		poll:     pollsvc,
 	}
 }
 
@@ -41,9 +41,9 @@ func (s *Service) Grab(ctx context.Context) {
 		ok   bool
 		err  error
 	)
-	ret := s.poll.Add(http.MethodGet, s.conf.GamePoint("state"), poll.RepeatEndlessly, 0)
+	t := s.poll.Add(http.MethodGet, s.conf.GamePoint("state"), poll.RepeatEndlessly, 0)
 	for {
-		if data, ok = <-ret; !ok {
+		if data, ok = <-t.Results(); !ok {
 			s.log(errChanClosed)
 			return
 		}
