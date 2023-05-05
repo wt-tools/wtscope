@@ -4,6 +4,7 @@ package hudmsg
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/wt-tools/wtscope/action"
 	"github.com/wt-tools/wtscope/vehicle"
@@ -145,6 +146,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 			TargetVehicle: v2,
 			Action:        act,
 		},
+		At: time.Duration(dmg.Time) * time.Second,
 	}
 	return d, nil
 }

@@ -19,6 +19,7 @@ type (
 		Sender string `json:"sender"`
 		Enemy  bool   `json:"enemy"`
 		Mode   string `json:"mode"`
+		Time   uint `json:"time"` // probably time in seconds from start of the battle?
 	}
 )
 

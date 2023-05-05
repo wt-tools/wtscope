@@ -26,7 +26,7 @@ type (
 		Achievement *Achievement
 		Origin      string
 		Enemy       bool
-		At          time.Time
+		At          time.Duration
 	}
 	Player struct {
 		ID   uint
