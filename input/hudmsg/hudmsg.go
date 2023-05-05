@@ -43,7 +43,7 @@ func (s *Service) log(err error) {
 
 func (s *Service) hudURL(dmg uint) string {
 	s.dmgID = dmg
-	return fmt.Sprintf("hudmsg&lastEvt=%d?lastDmg=%d", s.evtID, s.dmgID)
+	return fmt.Sprintf("hudmsg?lastEvt=%d&lastDmg=%d", s.evtID, s.dmgID)
 }
 
 func (s *Service) Grab(ctx context.Context) {

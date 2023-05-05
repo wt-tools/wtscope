@@ -25,13 +25,17 @@ type Service struct {
 	err            chan error
 }
 
-func New(c httper, logger chan error, loopDelay time.Duration, onProblemDelay time.Duration) *Service {
-	return &Service{
+func New(c httper, logger chan error, opts ...option) *Service {
+	s := Service{
 		httpc:          c,
 		err:            logger,
-		loopDelay:      loopDelay,
-		onProblemDelay: onProblemDelay,
+		loopDelay:      1 * time.Second,
+		onProblemDelay: 2 * time.Second,
 	}
+	for _, o := range opts {
+		o(&s)
+	}
+	return &s
 }
 
 // Do tasks syncrhonously.

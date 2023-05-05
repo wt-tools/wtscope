@@ -1,5 +1,9 @@
 package config
 
+// All characters or nicknames appearing in the code are fictious. Any
+// resemblance to real nicknames or squad names of the War Thunder,
+// active or not active, is purely coincidental.
+
 import "fmt"
 
 type local struct{}
