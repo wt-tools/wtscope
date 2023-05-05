@@ -2,7 +2,7 @@ package poll
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"sync"
@@ -94,7 +94,7 @@ func (s *Service) callEndpoint(t Task) ([]byte, error) {
 			return nil, err
 		}
 		if res.StatusCode >= http.StatusBadRequest {
-			return nil, errors.New("bad request")
+			return nil, fmt.Errorf("bad request (code: %d)", res.StatusCode)
 		}
 	}
 	defer res.Body.Close()

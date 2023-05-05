@@ -73,7 +73,7 @@ func (s *Service) Grab(ctx context.Context) {
 			}
 			dmg, err := parseDamage(d)
 			if err != nil {
-				s.log(err)
+				s.log(fmt.Errorf("req: %s, err: %w", s.hudURL(d.ID), err))
 				continue
 			}
 			s.Messages <- dmg
