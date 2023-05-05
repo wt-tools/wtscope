@@ -24,3 +24,9 @@ func SetClient(c http.Client) option {
 		s.httpc = c
 	}
 }
+
+func SetLogger(l chan error) option {
+	return func(s *Service) {
+		s.err = l
+	}
+}

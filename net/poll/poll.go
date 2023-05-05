@@ -25,10 +25,9 @@ type Service struct {
 	err            chan error
 }
 
-func New(c httper, logger chan error, opts ...option) *Service {
+func New(c httper, opts ...option) *Service {
 	s := Service{
 		httpc:          c,
-		err:            logger,
 		loopDelay:      1 * time.Second,
 		onProblemDelay: 2 * time.Second,
 	}
