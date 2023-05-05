@@ -85,6 +85,7 @@ func TestParseRu(t *testing.T) {
 		"Alpachotd! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 		"⋇ButterKnife69-td! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 		"Dalnoboyshiktd! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
+		"⋇CeH⋇ Xtest потерял связь",
 	}
 
 	for _, msg := range input {

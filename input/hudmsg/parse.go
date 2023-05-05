@@ -160,8 +160,8 @@ func isClanTag(s []rune) bool {
 	if len(s) < 2 {
 		return false
 	}
-	prefixes := []rune{'[', '^', '-', '='}
-	suffixes := []rune{']', '^', '-', '='}
+	prefixes := []rune{'[', '^', '-', '=', '⋇'}
+	suffixes := []rune{']', '^', '-', '=', '⋇'}
 	for i, t := range prefixes {
 		if s[0] == t && s[len(s)-1] == suffixes[i] {
 			return true
