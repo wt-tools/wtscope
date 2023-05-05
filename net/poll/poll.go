@@ -9,25 +9,21 @@ import (
 	"time"
 )
 
-type httper interface {
-	Do(req *http.Request) (*http.Response, error)
-}
-
 const RepeatEndlessly = -1
 
 type Service struct {
 	sync.Mutex
 	queue          []Task
 	current        int
-	httpc          httper
+	httpc          *http.Client
 	loopDelay      time.Duration
 	onProblemDelay time.Duration
 	err            chan error
 }
 
-func New(c httper, opts ...option) *Service {
+func New(opts ...option) *Service {
 	s := Service{
-		httpc:          c,
+		httpc:          http.DefaultClient,
 		loopDelay:      1 * time.Second,
 		onProblemDelay: 2 * time.Second,
 	}

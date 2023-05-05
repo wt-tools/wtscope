@@ -19,7 +19,7 @@ func SetProblemDelay(d time.Duration) option {
 	}
 }
 
-func SetClient(c http.Client) option {
+func SetClient(c *http.Client) option {
 	return func(s *Service) {
 		s.httpc = c
 	}
