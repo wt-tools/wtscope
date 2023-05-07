@@ -3,7 +3,7 @@ package hudmsg
 //go:generate stringer -type=tokenType
 
 import (
-	"fmt"
+	"strings"
 	"time"
 
 	"github.com/wt-tools/wtscope/action"
@@ -95,14 +95,13 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 		parens.reset()
 		word = nil
 	}
-	for _, m := range tokens {
-		fmt.Printf("%d: %s :: %v\n", m.pos, m.index.String(), string(m.text))
-	}
 	var (
 		p1, p2 action.Player
 		v1, v2 vehicle.Vehicle
 		act    action.Action
+		rawAct strings.Builder
 	)
+	// TODO action parsing not completed yet, should match actions
 	for _, tok := range tokens {
 		switch tok.index {
 		case clanTagType:
@@ -131,7 +130,11 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				v2.Name = string(tok.text)
 				break
 			}
-			// XXX
+		case actionType:
+			if rawAct.Len() > 0 {
+				rawAct.WriteString(" ")
+			}
+			rawAct.WriteString(tok.text)
 		}
 	}
 
@@ -145,6 +148,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 			TargetPlayer:  p2,
 			TargetVehicle: v2,
 			Action:        act,
+			ActionRaw:     rawAct.String(),
 		},
 		At: time.Duration(dmg.Time) * time.Second,
 	}

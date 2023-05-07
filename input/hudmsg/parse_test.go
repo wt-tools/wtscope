@@ -4,7 +4,10 @@ package hudmsg
 // resemblance to real nicknames or squad names of the War Thunder,
 // active or not active, is purely coincidental.
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestInsideParens(t *testing.T) {
 	input := map[string]bool{
@@ -89,6 +92,11 @@ func TestParseRu(t *testing.T) {
 	}
 
 	for _, msg := range input {
-		parseDamage(Damage{Msg: msg})
+		d, err := parseDamage(Damage{Msg: msg})
+		if err != nil {
+			t.Log(err)
+			t.Fail()
+		}
+		fmt.Printf("%+v damage: %+v\n", d, d.Damage)
 	}
 }

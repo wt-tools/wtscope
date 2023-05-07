@@ -8,6 +8,7 @@ import "github.com/wt-tools/wtscope/vehicle"
 type (
 	Damage struct {
 		Action        Action
+		ActionRaw     string
 		Vehicle       vehicle.Vehicle
 		Player        Player
 		TargetVehicle vehicle.Vehicle
