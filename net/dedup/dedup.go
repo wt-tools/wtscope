@@ -1,11 +1,13 @@
 package dedup
 
 import (
+	"bytes"
 	"time"
 )
 
 type (
 	duplicate struct {
+		data         []byte
 		prev, latest uint
 		prevAt       time.Time
 	}
@@ -17,6 +19,15 @@ type (
 
 func New() *duplicate {
 	return &duplicate{}
+}
+
+// Block duplicated lines of content.
+func (s *duplicate) BlockContent(data []byte) bool {
+	if bytes.Equal(data, s.data) {
+		return true
+	}
+	s.data = data
+	return false
 }
 
 func (s *duplicate) Exists(val uint) bool {

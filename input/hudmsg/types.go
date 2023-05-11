@@ -19,7 +19,7 @@ type (
 		Sender string `json:"sender"`
 		Enemy  bool   `json:"enemy"`
 		Mode   string `json:"mode"`
-		Time   uint `json:"time"` // probably time in seconds from start of the battle?
+		Time   uint   `json:"time"` // probably time in seconds from start of the battle?
 	}
 )
 
@@ -28,6 +28,7 @@ type filter interface {
 }
 type deduplicator interface {
 	Exists(uint) bool
+	BlockContent([]byte) bool
 }
 type configurator interface {
 	GamePoint(string) string

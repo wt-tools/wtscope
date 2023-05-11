@@ -41,7 +41,7 @@ func (s *Service) Grab(ctx context.Context) {
 		ok   bool
 		err  error
 	)
-	t := s.poll.Add(http.MethodGet, s.conf.GamePoint("state"), poll.RepeatEndlessly, 0)
+	t := s.poll.Add("indicators", http.MethodGet, s.conf.GamePoint("state"), "/tmp/state", poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-t.Results(); !ok {
 			s.log(errChanClosed)

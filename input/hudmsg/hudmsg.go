@@ -53,7 +53,7 @@ func (s *Service) Grab(ctx context.Context) {
 		ok   bool
 		err  error
 	)
-	t := s.poll.Add(http.MethodGet, s.conf.GamePoint(s.hudURL(0)), poll.RepeatEndlessly, 0)
+	t := s.poll.Add("hudmsg", http.MethodGet, s.conf.GamePoint(s.hudURL(0)), "/tmp/hudmsg", poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-t.Results(); !ok {
 			s.log(errChanClosed)
@@ -66,6 +66,9 @@ func (s *Service) Grab(ctx context.Context) {
 		}
 		for _, d := range raw.Damage {
 			if s.dedup.Exists(d.ID) {
+				continue
+			}
+			if s.dedup.BlockContent([]byte(d.Msg + d.Sender + d.Mode)) {
 				continue
 			}
 			if s.dmgID != d.ID {

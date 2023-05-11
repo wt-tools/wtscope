@@ -1,10 +1,13 @@
 package poll
 
+import "os"
+
 type Task struct {
-	method, url string
-	repeat      int
-	retry       int
-	ret         chan []byte
+	name, method, url string
+	repeat            int
+	retry             int
+	log               *os.File
+	ret               chan []byte
 }
 
 // Update URL for task.

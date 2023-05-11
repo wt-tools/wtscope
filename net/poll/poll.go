@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path"
 	"sync"
 	"time"
 )
@@ -18,6 +20,7 @@ type Service struct {
 	httpc          *http.Client
 	loopDelay      time.Duration
 	onProblemDelay time.Duration
+	rawPath        string
 	err            chan error
 }
 
@@ -69,6 +72,9 @@ func (s *Service) Do() {
 			continue
 		}
 		t.ret <- data
+		if t.log != nil {
+			t.log.Write(data)
+		}
 	}
 }
 
@@ -104,14 +110,24 @@ func (s *Service) callEndpoint(t Task) ([]byte, error) {
 // the task still remains in the queue until `repeat` count decreased
 // to 0. For endless repeat set `repeat` to -1. By default no retries
 // for the request, set `retry` to value greater than 0.
-func (s *Service) Add(method, url string, repeat, retry int) Task {
+func (s *Service) Add(name, method, url string, logPath string, repeat, retry int) Task {
 	if repeat == 0 {
 		repeat = 1
 	}
 	if retry <= 0 {
 		retry = 1
 	}
-	t := Task{method, url, repeat, retry, make(chan []byte, 1)}
+	var (
+		f   *os.File
+		err error
+	)
+	if logPath != "" {
+		fname := path.Join(s.rawPath, fmt.Sprintf("%s-%s", name, time.Now().Format("06-01-02_15:04:05.log")))
+		if f, err = os.Create(fname); err != nil {
+			s.log(fmt.Errorf("for %s can't create %s: %w", name, fname, err))
+		}
+	}
+	t := Task{name, method, url, repeat, retry, f, make(chan []byte, 1)}
 	s.Lock()
 	s.queue = append(s.queue, t)
 	s.Unlock()
