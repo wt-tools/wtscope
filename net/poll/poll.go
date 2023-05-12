@@ -1,6 +1,7 @@
 package poll
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -15,12 +16,11 @@ const RepeatEndlessly = -1
 
 type Service struct {
 	sync.Mutex
-	queue          []Task
+	pool           []Task
 	current        int
 	httpc          *http.Client
 	loopDelay      time.Duration
 	onProblemDelay time.Duration
-	rawPath        string
 	err            chan error
 }
 
@@ -47,21 +47,21 @@ func (s *Service) Do() {
 		s.Lock()
 		var t Task
 		{
-			if len(s.queue) == 0 {
+			if len(s.pool) == 0 {
 				s.Unlock()
 				time.Sleep(s.onProblemDelay)
 				continue
 			}
-			t = s.queue[s.current]
-			if s.queue[s.current].repeat != RepeatEndlessly {
-				s.queue[s.current].repeat--
+			t = s.pool[s.current]
+			if s.pool[s.current].repeat != RepeatEndlessly {
+				s.pool[s.current].repeat--
 			}
-			if s.queue[s.current].repeat == 0 {
+			if s.pool[s.current].repeat == 0 {
 				close(t.ret)
-				s.queue = append(s.queue[:s.current], s.queue[s.current+1:]...)
+				s.pool = append(s.pool[:s.current], s.pool[s.current+1:]...)
 			}
 			s.current++
-			if s.current >= len(s.queue) {
+			if s.current >= len(s.pool) {
 				s.current = 0
 			}
 		}
@@ -73,7 +73,8 @@ func (s *Service) Do() {
 		}
 		t.ret <- data
 		if t.log != nil {
-			t.log.Write(data)
+			t.log.Write(bytes.Replace(data, []byte("\n"), []byte(" "), -1))
+			t.log.Write([]byte("\n"))
 		}
 	}
 }
@@ -122,14 +123,14 @@ func (s *Service) Add(name, method, url string, logPath string, repeat, retry in
 		err error
 	)
 	if logPath != "" {
-		fname := path.Join(s.rawPath, fmt.Sprintf("%s-%s", name, time.Now().Format("06-01-02_15:04:05.log")))
+		fname := path.Join(logPath, fmt.Sprintf("%s-%s.log", name, time.Now().Format("06-01-02_15:04:05")))
 		if f, err = os.Create(fname); err != nil {
 			s.log(fmt.Errorf("for %s can't create %s: %w", name, fname, err))
 		}
 	}
 	t := Task{name, method, url, repeat, retry, f, make(chan []byte, 1)}
 	s.Lock()
-	s.queue = append(s.queue, t)
+	s.pool = append(s.pool, t)
 	s.Unlock()
 	return t
 }

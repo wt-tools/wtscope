@@ -30,9 +30,3 @@ func SetLogger(l chan error) option {
 		s.err = l
 	}
 }
-
-func SetRawLog(path string) option {
-	return func(s *Service) {
-		s.rawPath = path
-	}
-}

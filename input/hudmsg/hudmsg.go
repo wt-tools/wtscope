@@ -53,7 +53,7 @@ func (s *Service) Grab(ctx context.Context) {
 		ok   bool
 		err  error
 	)
-	t := s.poll.Add("hudmsg", http.MethodGet, s.conf.GamePoint(s.hudURL(0)), "/tmp/hudmsg", poll.RepeatEndlessly, 0)
+	t := s.poll.Add("hudmsg", http.MethodGet, s.conf.GamePoint(s.hudURL(0)), "/tmp", poll.RepeatEndlessly, 0)
 	for {
 		if data, ok = <-t.Results(); !ok {
 			s.log(errChanClosed)
