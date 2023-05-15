@@ -1,8 +1,9 @@
 package hudmsg
 
 import (
-	"context"
 	"encoding/json"
+
+	"github.com/wt-tools/wtscope/net/poll"
 )
 
 type (
@@ -23,9 +24,11 @@ type (
 	}
 )
 
-type filter interface {
-	Important(context.Context) bool
+type poller interface {
+	Do()
+	Add(name, method, url string, logPath string, repeat, retry int) poll.Task
 }
+
 type deduplicator interface {
 	Exists(uint) bool
 	BlockContent([]byte) bool

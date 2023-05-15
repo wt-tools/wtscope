@@ -15,16 +15,15 @@ import (
 type Service struct {
 	Messages chan action.GeneralAction
 
-	poll  *poll.Service
+	poll  poller
 	dmgID uint
 	evtID uint
-	filt  filter
 	dedup deduplicator
 	conf  configurator
 	err   chan error
 }
 
-func New(conf configurator, pollsvc *poll.Service, dedup deduplicator, log chan error) *Service {
+func New(conf configurator, pollsvc poller, dedup deduplicator, log chan error) *Service {
 	const name = "hudmsg"
 	return &Service{
 		err:      log,
@@ -49,7 +48,6 @@ func (s *Service) hudURL(dmg uint) string {
 func (s *Service) Grab(ctx context.Context) {
 	var (
 		data []byte
-		raw  Raw
 		ok   bool
 		err  error
 	)
@@ -59,7 +57,7 @@ func (s *Service) Grab(ctx context.Context) {
 			s.log(errChanClosed)
 			return
 		}
-
+		var raw Raw
 		if err = json.Unmarshal(data, &raw); err != nil {
 			s.log(err)
 			continue
