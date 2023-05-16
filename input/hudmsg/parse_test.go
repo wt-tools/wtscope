@@ -89,6 +89,9 @@ func TestParseRu(t *testing.T) {
 		"⋇ButterKnife69-td! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 		"Dalnoboyshiktd! kd?NET_PLAYER_DISCONNECT_FROM_GAME",
 		"⋇CeH⋇ Xtest потерял связь",
+		"=CCCP= ZenAviator потерял связь",
+		"=SPACY= 武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил ⋇NewBornSyndrome (Т-34-85)",
+		"武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил =SPACY= ⋇NewBornSyndrome (Т-34-85)",
 	}
 
 	for _, msg := range input {

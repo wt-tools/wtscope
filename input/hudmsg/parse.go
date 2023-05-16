@@ -105,11 +105,11 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 	for _, tok := range tokens {
 		switch tok.index {
 		case clanTagType:
-			if p1.Clan == "" {
+			if p1.Name == "" {
 				p1.Clan = string(tok.text)
 				break
 			}
-			if p2.Clan == "" {
+			if p2.Name == "" {
 				p2.Clan = string(tok.text)
 			}
 		case playerNameType:
