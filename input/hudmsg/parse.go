@@ -74,8 +74,8 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				mode = achievementType
 				break
 			}
-			// second player + vehicle info
 			if parens.occurs {
+				// second player + vehicle info
 				mode = vehicleType
 				prevToken.index = playerNameType
 				break
@@ -100,6 +100,7 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 		v1, v2 vehicle.Vehicle
 		act    action.Action
 		rawAct strings.Builder
+		achiev string
 	)
 	// TODO action parsing not completed yet, should match actions
 	for _, tok := range tokens {
@@ -135,6 +136,8 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				rawAct.WriteString(" ")
 			}
 			rawAct.WriteString(tok.text)
+		case achievementType:
+			achiev = string(tok.text)
 		}
 	}
 
@@ -149,6 +152,9 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 			TargetVehicle: v2,
 			Action:        act,
 			ActionRaw:     rawAct.String(),
+		},
+		Achievement: &action.Achievement{
+			Name: achiev,
 		},
 		At: time.Duration(dmg.Time) * time.Second,
 	}

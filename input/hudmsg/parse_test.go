@@ -71,8 +71,6 @@ func TestParseRu(t *testing.T) {
 		"Debiiro (ИСУ-152) уничтожил [_ViP_] PATRIOT_71_USSR (M24)",
 		"Debiiro (ИСУ-152) уничтожил ^xTHAx^ Gow13510 (T55E1)",
 		"Alpacho (M18) поджёг alkobomgara (КВ-2)",
-		"Securom (СУ-152) получил \"Спасатель танков: x1\"",
-		"[BLR] _Power_of_Black_ (ИС-2) получил \"Главный калибр\"",
 		"[TVS4] Gei_ye_pa (ЗиС-12 (94-КМ)) получил \"Спасатель танков: x4\"",
 		"⋇ UGAR^ azumax0880 (Lvtdgb m/40) получил \"Командная работа: x1\"",
 		"-BABAI- Alistair17 (БТ-5) уничтожил allonelive (Jagdpanzer 38(t))",
@@ -92,6 +90,8 @@ func TestParseRu(t *testing.T) {
 		"=CCCP= ZenAviator потерял связь",
 		"=SPACY= 武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил ⋇NewBornSyndrome (Т-34-85)",
 		"武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил =SPACY= ⋇NewBornSyndrome (Т-34-85)",
+		"Securom (СУ-152) получил \"Спасатель танков: x1\"",
+		"[BLR] _Power_of_Black_ (ИС-2) получил \"Главный калибр\"",
 	}
 
 	for _, msg := range input {
@@ -100,6 +100,38 @@ func TestParseRu(t *testing.T) {
 			t.Log(err)
 			t.Fail()
 		}
-		fmt.Printf("%+v damage: %+v\n", d, d.Damage)
+		fmt.Printf("%+v damage: %+v achievement: %v\n", d, d.Damage, d.Achievement)
 	}
 }
+
+// func TestParseFileRu(t *testing.T) {
+
+//	cfg := config.New()
+//	log.Log("status", "WTScope started")
+//	dd := dedup.New()
+//	errlog := make(chan error, 16)
+//	var poll testpoll
+//	poll.Add("~/mem/hudmsg-23-05-14_20:35:53.log", _,_,_,_,_)
+//	hudmsgSvc := New(log, conf, testpoll, dd)
+
+//	for _, msg := range lines {
+//		d, err := parseDamage(Damage{Msg: msg})
+//		if err != nil {
+//			t.Log(err)
+//			t.Fail()
+//		}
+//		fmt.Printf("%+v damage: %+v\n", d, d.Damage)
+//	}
+// }
+
+// type testpoll struct {
+//	file string
+// }
+
+// func(p*testpoll)	Add(name, method, url string, logPath string, repeat, retry int) poll.Task{
+// inp, _ := os.ReadFile(p.file)
+// lines := bytes.Split(inp, "\n")
+// }
+
+// func(p*testpoll) Do(){
+// }
