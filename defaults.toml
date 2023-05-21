@@ -1,0 +1,6 @@
+[player]
+name = "YourPlayerName"
+squad = "YourSquadName"
+
+[game]
+url = "http://localhost:8111/"
