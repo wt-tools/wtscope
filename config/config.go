@@ -21,33 +21,41 @@ type config struct {
 	Squad   string   `koanf:"player.squad"`
 	Friends []string `koanf:"player.friends"`
 	GameURL string   `koanf:"game.url"`
+	konfig  *koanf.Koanf
 }
 
 func Load(log *kiwi.Logger) *config {
-	var cfg config
+	var err error
 	l := log.New().With("path", FilePath)
-	k := koanf.New(".")
+	konfig := koanf.New(".")
+	cfg := config{konfig: konfig}
 	f := file.Provider(FilePath)
-	if err := k.Load(f, toml.Parser()); err != nil {
+	if err = konfig.Load(f, toml.Parser()); err != nil {
 		l.Log("msg", "can't load config, try to use embedded defaults", "err", err)
 		// TODO setup defaults here
 		return &cfg
 	}
-	k.Print() // for debug yet
-	k.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
-
+	if err = konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true}); err != nil {
+		l.Log("msg", "fail configuration file parsing", "err", err)
+		return &cfg
+	}
+	// here code thread unsafe yet
 	f.Watch(func(event interface{}, err error) {
 		if err != nil {
 			l.Log("msg", "configuratiton reloading failed, using old config", "err", err)
 			return
 		}
 		l.Log("msg", "configuration has changed")
-		k = koanf.New(".")
-		k.Load(f, toml.Parser())
-		k.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
-		k.Print() // for debug yet
+		konfig = koanf.New(".")
+		cfg.konfig = konfig
+		konfig.Load(f, toml.Parser())
+		konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
 	})
 	return &cfg
+}
+
+func (c *config) Dump() string {
+	return c.konfig.Sprint()
 }
 
 func (c *config) PlayerName() string {
