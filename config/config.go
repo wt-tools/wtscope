@@ -77,5 +77,5 @@ func (c *config) PlayerSquad() string {
 }
 
 func (c *config) GamePoint(methodPath string) string {
-	return fmt.Sprintf(path.Join(c.GameURL, "%s"), methodPath)
+	return fmt.Sprintf(c.GameURL+"%s", methodPath)
 }
