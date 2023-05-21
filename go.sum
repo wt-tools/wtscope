@@ -1,4 +1,6 @@
 github.com/grafov/kiwi v0.5.2 h1:alVAMmclxOdORkML2CR2r2cZH/9+45vVFvz+q/FY+6o=
 github.com/grafov/kiwi v0.5.2/go.mod h1:NCn5wioz1NKaOnLZJTAj6WfsuRARVRok9MrTO4J9sJA=
+github.com/kelseyhightower/envconfig v1.4.0 h1:Im6hONhd3pLkfDFsbRgu68RDNkGF1r3dvMUtDTo2cv8=
+github.com/kelseyhightower/envconfig v1.4.0/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa3axMbJDNb//FQX6Gg=
 github.com/valyala/fastjson v1.6.4 h1:uAUNq9Z6ymTgGhcm0UynUAB6tlbakBrz6CQFax3BXVQ=
 github.com/valyala/fastjson v1.6.4/go.mod h1:CLCAqky6SMuOcxStkYQvblddUtoRxhYMGLrsQns1aXY=

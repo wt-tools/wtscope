@@ -4,20 +4,34 @@ package config
 // resemblance to real nicknames or squad names of the War Thunder,
 // active or not active, is purely coincidental.
 
-import "fmt"
+import (
+	"fmt"
+	"path"
 
-type local struct{}
+	"github.com/grafov/kiwi"
+	"github.com/kelseyhightower/envconfig"
+)
 
-func New() *local {
-	return &local{}
+type config struct {
+	Player  string
+	Squad   string
+	Friends []string
+	GameURL string "http://localhost:8111/"
 }
 
-func (l *local) CurrentPlayer() string {
-	return "ZenAviator" // my nickname in game, for development
+func Load(log *kiwi.Logger) *config {
+	var cfg config
+	err := envconfig.Process("WT_", &cfg)
+	if err != nil {
+		log.Log("msg", "can't load config, try to use defaults", "err", err)
+	}
+	return &cfg
 }
 
-func (l *local) GamePoint(path string) string {
-	// XXX
-	return fmt.Sprintf("http://localhost:9222/%s", path)
-	// return fmt.Sprintf("http://localhost:8111/%s?lastEvt=0&lastDmg=10", path)
+func (c *config) PlayerName() string {
+	return c.Player
+}
+
+func (c *config) GamePoint(methodPath string) string {
+	return fmt.Sprintf(path.Join(c.GameURL, "%s"), methodPath)
 }
