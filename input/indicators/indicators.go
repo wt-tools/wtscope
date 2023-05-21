@@ -12,11 +12,11 @@ type Service struct {
 	Messages chan indicator
 
 	poll *poll.Service
-	conf configurator
+	conf Config
 	err  chan error
 }
 
-func New(conf configurator, pollsvc *poll.Service, log chan error) *Service {
+func New(conf Config, pollsvc *poll.Service, log chan error) *Service {
 	return &Service{
 		err:      log,
 		conf:     conf,

@@ -98,6 +98,6 @@ const (
 	Efficiency1          = "efficiency 1, %"          // int
 )
 
-type configurator interface {
+type Config interface {
 	GamePoint(string) string
 }

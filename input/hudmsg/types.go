@@ -33,6 +33,6 @@ type deduplicator interface {
 	Exists(uint) bool
 	BlockContent([]byte) bool
 }
-type configurator interface {
+type Config interface {
 	GamePoint(string) string
 }

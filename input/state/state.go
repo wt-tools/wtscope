@@ -15,11 +15,11 @@ type Service struct {
 
 	p    fastjson.Parser
 	poll *poll.Service
-	conf configurator
+	conf Config
 	err  chan error
 }
 
-func New(conf configurator, pollsvc *poll.Service, log chan error) *Service {
+func New(conf Config, pollsvc *poll.Service, log chan error) *Service {
 	const name = "state"
 	return &Service{
 		err:      log,

@@ -19,11 +19,11 @@ type Service struct {
 	dmgID uint
 	evtID uint
 	dedup deduplicator
-	conf  configurator
+	conf  Config
 	err   chan error
 }
 
-func New(conf configurator, pollsvc poller, dedup deduplicator, log chan error) *Service {
+func New(conf Config, pollsvc poller, dedup deduplicator, log chan error) *Service {
 	const name = "hudmsg"
 	return &Service{
 		err:      log,

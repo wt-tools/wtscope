@@ -132,6 +132,6 @@ type indicator struct {
 type deduplicator interface {
 	Exists(uint) bool
 }
-type configurator interface {
+type Config interface {
 	GamePoint(string) string
 }
