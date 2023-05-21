@@ -6,9 +6,10 @@ package config
 
 import (
 	"fmt"
+	"os/user"
 	"path"
+	"strings"
 
-	"github.com/grafov/kiwi"
 	"github.com/knadh/koanf/parsers/toml"
 	"github.com/knadh/koanf/providers/file"
 	"github.com/knadh/koanf/v2"
@@ -22,36 +23,45 @@ type config struct {
 	Friends []string `koanf:"player.friends"`
 	GameURL string   `koanf:"game.url"`
 	konfig  *koanf.Koanf
+	err     chan error
 }
 
-func Load(log *kiwi.Logger) *config {
+func Load(log chan error) (*config, error) {
 	var err error
-	l := log.New().With("path", FilePath)
 	konfig := koanf.New(".")
-	cfg := config{konfig: konfig}
+	cfg := config{err: log, konfig: konfig}
+	if strings.HasPrefix(FilePath, "~/") {
+		u, _ := user.Current()
+		FilePath = path.Join(u.HomeDir, FilePath[2:])
+	}
 	f := file.Provider(FilePath)
 	if err = konfig.Load(f, toml.Parser()); err != nil {
-		l.Log("msg", "can't load config, try to use embedded defaults", "err", err)
 		// TODO setup defaults here
-		return &cfg
+		return nil, fmt.Errorf("can't load config: %w", err)
 	}
 	if err = konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true}); err != nil {
-		l.Log("msg", "fail configuration file parsing", "err", err)
-		return &cfg
+		return &cfg, fmt.Errorf("fail configuration file parsing: %w", err)
 	}
 	// here code thread unsafe yet
 	f.Watch(func(event interface{}, err error) {
 		if err != nil {
-			l.Log("msg", "configuratiton reloading failed, using old config", "err", err)
+			cfg.log(err)
 			return
 		}
-		l.Log("msg", "configuration has changed")
 		konfig = koanf.New(".")
 		cfg.konfig = konfig
 		konfig.Load(f, toml.Parser())
-		konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true})
+		if err = konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true}); err != nil {
+			cfg.log(err)
+		}
 	})
-	return &cfg
+	return &cfg, nil
+}
+
+func (c *config) log(err error) {
+	if c.err != nil {
+		c.err <- err
+	}
 }
 
 func (c *config) Dump() string {
