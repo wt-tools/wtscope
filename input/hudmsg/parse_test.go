@@ -92,7 +92,10 @@ func TestParseRu(t *testing.T) {
 		"武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил =SPACY= ⋇NewBornSyndrome (Т-34-85)",
 		"Securom (СУ-152) получил \"Спасатель танков: x1\"",
 		"[BLR] _Power_of_Black_ (ИС-2) получил \"Главный калибр\"",
+		// log from test battle:
 		"[KRbIM] ZenAviator (БМП-1) уничтожил Leopard A1A1",
+		"[KRbIM] ZenAviator (ПТ-76-57) уничтожил Pz.II C",
+		"[KRbIM] ZenAviator (ПТ-76-57) уничтожил Sd.Kfz. 6/2",
 	}
 
 	for _, msg := range input {

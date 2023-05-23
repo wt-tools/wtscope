@@ -42,7 +42,7 @@ var actionTexts = []translatedAction{
 		action.Afire,
 		[]translation{
 			{En, "set afire"},
-			{Ru, "поджег"},
+			{Ru, "поджёг"},
 		},
 	},
 	{

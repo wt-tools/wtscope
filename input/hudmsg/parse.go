@@ -21,6 +21,7 @@ type (
 	tokenType int
 )
 
+const weirdDisconnectMessage = `kd?NET_PLAYER_DISCONNECT_FROM_GAME`
 const (
 	unknownType tokenType = iota
 	squadTagType
@@ -76,7 +77,7 @@ func parseDamage(dmg Damage) (events.Event, error) {
 				// Convert actions to another kinds of types.
 				switch lastAction {
 				case action.Destroyed:
-					tok.index = vehicleType
+					tok.index = playerNameType
 				}
 				goto loop
 			}
@@ -92,7 +93,6 @@ func parseDamage(dmg Damage) (events.Event, error) {
 			achiev = string(tok.text)
 		}
 	}
-
 	d := events.Event{
 		ID:            dmg.ID,
 		Origin:        dmg.Msg,
@@ -108,6 +108,14 @@ func parseDamage(dmg Damage) (events.Event, error) {
 			Name: achiev,
 		},
 		At: time.Duration(dmg.Time) * time.Second,
+	}
+	// Patch result if the weird message occured.
+	if d.ActionText == weirdDisconnectMessage {
+		d.Action = action.NetworkDisconnect
+		d.ActionText = l10n.ActionText(l10n.En, action.Disconnected)
+		if len(d.Player.Name) > 3 {
+			d.Player.Name = d.Player.Name[:len(d.Player.Name)-3]
+		}
 	}
 	return d, nil
 }
