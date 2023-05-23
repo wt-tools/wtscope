@@ -92,6 +92,7 @@ func TestParseRu(t *testing.T) {
 		"武德充沛的纯爱战士喜欢射豹 (Bf 109 G) уничтожил =SPACY= ⋇NewBornSyndrome (Т-34-85)",
 		"Securom (СУ-152) получил \"Спасатель танков: x1\"",
 		"[BLR] _Power_of_Black_ (ИС-2) получил \"Главный калибр\"",
+		"[KRbIM] ZenAviator (БМП-1) уничтожил Leopard A1A1",
 	}
 
 	for _, msg := range input {
@@ -100,7 +101,7 @@ func TestParseRu(t *testing.T) {
 			t.Log(err)
 			t.Fail()
 		}
-		fmt.Printf("%+v damage: %+v achievement: %v\n", d, d.Damage, d.Achievement)
+		fmt.Printf("parsed action: %s %+v\n", d.Action.String(), d)
 	}
 }
 

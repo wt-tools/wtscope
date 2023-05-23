@@ -1,4 +1,4 @@
-package action
+package events
 
 type (
 	Achievement struct {

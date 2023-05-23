@@ -15,6 +15,7 @@ import (
 	"github.com/grafov/kiwi"
 )
 
+// example is broken
 func main() {
 	ctx := context.Background()
 	kiwi.SinkTo(os.Stdout, kiwi.AsLogfmt()).Start()

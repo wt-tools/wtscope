@@ -8,12 +8,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/wt-tools/wtscope/action"
+	"github.com/wt-tools/wtscope/events"
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
 type Service struct {
-	Messages chan action.GeneralAction
+	Messages chan events.Event
 
 	poll  poller
 	dmgID uint
@@ -30,7 +30,7 @@ func New(conf Config, pollsvc poller, dedup deduplicator, log chan error) *Servi
 		conf:     conf,
 		poll:     pollsvc,
 		dedup:    dedup,
-		Messages: make(chan action.GeneralAction, 3),
+		Messages: make(chan events.Event, 3),
 	}
 }
 

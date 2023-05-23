@@ -9,7 +9,7 @@ func _() {
 	// Re-run the stringer command to generate them again.
 	var x [1]struct{}
 	_ = x[unknownType-0]
-	_ = x[clanTagType-1]
+	_ = x[squadTagType-1]
 	_ = x[playerNameType-2]
 	_ = x[vehicleType-3]
 	_ = x[actionType-4]

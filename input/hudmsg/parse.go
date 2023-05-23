@@ -7,6 +7,8 @@ import (
 	"time"
 
 	"github.com/wt-tools/wtscope/action"
+	"github.com/wt-tools/wtscope/events"
+	"github.com/wt-tools/wtscope/l10n"
 	"github.com/wt-tools/wtscope/vehicle"
 )
 
@@ -21,7 +23,7 @@ type (
 
 const (
 	unknownType tokenType = iota
-	clanTagType
+	squadTagType
 	playerNameType
 	vehicleType
 	actionType
@@ -29,89 +31,27 @@ const (
 )
 
 // Just funny to parse it without regexps.
-func parseDamage(dmg Damage) (action.GeneralAction, error) {
-	// The message started with username possibly prepended by clan tag.
+func parseDamage(dmg Damage) (events.Event, error) {
+	tokens := tokenize(dmg)
 	var (
-		mode           = playerNameType
-		word           []rune
-		quotes, parens counter
-		prevToken      = &token{}
-		tokens         []token
+		p1, p2                 events.Player
+		v1, v2                 vehicle.Vehicle
+		rawAct                 strings.Builder
+		achiev                 string
+		actionCode, lastAction action.Code
+		lang                   l10n.Lang
+		actionComplete         bool
 	)
-	for i, c := range dmg.Msg + " " { // TODO cleanup hack with trailing space
-		if parens.insideParens(c) || quotes.insideQuotes(c) {
-			word = append(word, c)
-			continue
-		}
-		if !isSpace(c) {
-			word = append(word, c)
-			continue
-		}
-		newToken := token{pos: i, text: string(word)}
-		switch mode {
-		case clanTagType:
-			if !isClanTag(word) {
-				mode = playerNameType
-			}
-		case playerNameType:
-			if parens.occurs {
-				mode = vehicleType
-				break
-			}
-			if isClanTag(word) {
-				mode = clanTagType
-				break
-			}
-			if prevToken.index == playerNameType {
-				mode = actionType
-			}
-		case vehicleType:
-			if !parens.occurs {
-				mode = actionType
-			}
-		case actionType:
-			if quotes.occurs {
-				mode = achievementType
-				break
-			}
-			if parens.occurs {
-				// second player + vehicle info
-				mode = vehicleType
-				prevToken.index = playerNameType
-				break
-			}
-			if isClanTag(word) {
-				mode = clanTagType
-			}
-		}
-		// cleanup quotes and parens
-		if mode == vehicleType || mode == achievementType {
-			newToken.text = string(word[1 : len(word)-1])
-		}
-		newToken.index = mode
-		tokens = append(tokens, newToken)
-		prevToken = &tokens[len(tokens)-1]
-		quotes.reset()
-		parens.reset()
-		word = nil
-	}
-	var (
-		p1, p2 action.Player
-		v1, v2 vehicle.Vehicle
-		act    action.Action
-		rawAct strings.Builder
-		achiev string
-	)
-	// TODO action parsing not completed yet, should match actions
 	for _, tok := range tokens {
+	loop:
 		switch tok.index {
-		case clanTagType:
+		case squadTagType:
 			if p1.Name == "" {
-				p1.Clan = string(tok.text)
+				p1.Squad = string(tok.text)
 				break
 			}
 			if p2.Name == "" {
-				p2.Clan = string(tok.text)
+				p2.Squad = string(tok.text)
 			}
 		case playerNameType:
 			if p1.Name == "" {
@@ -132,33 +72,113 @@ func parseDamage(dmg Damage) (action.GeneralAction, error) {
 				break
 			}
 		case actionType:
+			if actionComplete {
+				// Convert actions to another kinds of types.
+				switch lastAction {
+				case action.Destroyed:
+					tok.index = vehicleType
+				}
+				goto loop
+			}
 			if rawAct.Len() > 0 {
 				rawAct.WriteString(" ")
 			}
 			rawAct.WriteString(tok.text)
+			// If known action has found. Treat all
+			// rest of actions tokens as player/vehicle/achievement.
+			actionCode, lang, actionComplete = l10n.FindAction(rawAct.String())
+			lastAction = actionCode
 		case achievementType:
 			achiev = string(tok.text)
 		}
 	}
 
-	d := action.GeneralAction{
-		ID:     dmg.ID,
-		Origin: dmg.Msg,
-		Enemy:  dmg.Enemy,
-		Damage: &action.Damage{
-			Player:        p1,
-			Vehicle:       v1,
-			TargetPlayer:  p2,
-			TargetVehicle: v2,
-			Action:        act,
-			ActionRaw:     rawAct.String(),
-		},
-		Achievement: &action.Achievement{
+	d := events.Event{
+		ID:            dmg.ID,
+		Origin:        dmg.Msg,
+		Lang:          lang,
+		Enemy:         dmg.Enemy,
+		Player:        p1,
+		Vehicle:       v1,
+		TargetPlayer:  p2,
+		TargetVehicle: v2,
+		Action:        actionCode,
+		ActionText:    rawAct.String(),
+		Achievement: &events.Achievement{
 			Name: achiev,
 		},
 		At: time.Duration(dmg.Time) * time.Second,
 	}
 	return d, nil
+}
+
+func tokenize(dmg Damage) []token {
+	// The message started with username possibly prepended by clan tag.
+	var (
+		mode           = playerNameType
+		word           []rune
+		quotes, parens counter
+		prevToken      = &token{}
+		tokens         []token
+	)
+	for i, c := range dmg.Msg + " " { // TODO cleanup hack with trailing space
+		if parens.insideParens(c) || quotes.insideQuotes(c) {
+			word = append(word, c)
+			continue
+		}
+		if !isSpace(c) {
+			word = append(word, c)
+			continue
+		}
+		newToken := token{pos: i, text: string(word)}
+		switch mode {
+		case squadTagType:
+			if !isSquadTag(word) {
+				mode = playerNameType
+			}
+		case playerNameType:
+			if parens.occurs {
+				mode = vehicleType
+				break
+			}
+			if isSquadTag(word) {
+				mode = squadTagType
+				break
+			}
+			if prevToken.index == playerNameType {
+				mode = actionType
+			}
+		case vehicleType:
+			if !parens.occurs {
+				mode = actionType
+			}
+		case actionType:
+			if quotes.occurs {
+				mode = achievementType
+				break
+			}
+			if parens.occurs {
+				// second player + vehicle info
+				mode = vehicleType
+				prevToken.index = playerNameType
+				break
+			}
+			if isSquadTag(word) {
+				mode = squadTagType
+			}
+		}
+		// cleanup quotes and parens
+		if mode == vehicleType || mode == achievementType {
+			newToken.text = string(word[1 : len(word)-1])
+		}
+		newToken.index = mode
+		tokens = append(tokens, newToken)
+		prevToken = &tokens[len(tokens)-1]
+		quotes.reset()
+		parens.reset()
+		word = nil
+	}
+	return tokens
 }
 
 func isSpace(c rune) bool {
@@ -168,7 +188,7 @@ func isSpace(c rune) bool {
 	return false
 }
 
-func isClanTag(s []rune) bool {
+func isSquadTag(s []rune) bool {
 	if len(s) < 2 {
 		return false
 	}
