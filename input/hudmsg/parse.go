@@ -44,7 +44,7 @@ func parseDamage(dmg Damage) (events.Event, error) {
 		actionComplete         bool
 	)
 	for _, tok := range tokens {
-	loop:
+		//	loop:
 		switch tok.index {
 		case squadTagType:
 			if p1.Name == "" {
@@ -73,14 +73,14 @@ func parseDamage(dmg Damage) (events.Event, error) {
 				break
 			}
 		case actionType:
-			if actionComplete {
-				// Convert actions to another kinds of types.
-				switch lastAction {
-				case action.Destroyed:
-					tok.index = playerNameType
-				}
-				goto loop
-			}
+			// if actionComplete {
+			//	// Convert actions to another kinds of types.
+			//	switch lastAction {
+			//	case action.Destroyed:
+			//		tok.index = playerNameType
+			//	}
+			//	goto loop
+			// }
 			if rawAct.Len() > 0 {
 				rawAct.WriteString(" ")
 			}
@@ -88,7 +88,9 @@ func parseDamage(dmg Damage) (events.Event, error) {
 			// If known action has found. Treat all
 			// rest of actions tokens as player/vehicle/achievement.
 			actionCode, lang, actionComplete = l10n.FindAction(rawAct.String())
-			lastAction = actionCode
+			if actionComplete {
+				lastAction = actionCode
+			}
 		case achievementType:
 			achiev = string(tok.text)
 		}
@@ -102,7 +104,7 @@ func parseDamage(dmg Damage) (events.Event, error) {
 		Vehicle:       v1,
 		TargetPlayer:  p2,
 		TargetVehicle: v2,
-		Action:        actionCode,
+		Action:        lastAction,
 		ActionText:    rawAct.String(),
 		Achievement: &events.Achievement{
 			Name: achiev,
