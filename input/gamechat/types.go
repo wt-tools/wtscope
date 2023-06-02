@@ -1,6 +1,8 @@
 package gamechat
 
 import (
+	"time"
+
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
@@ -13,6 +15,7 @@ type (
 		Enemy  bool   `json:"enemy"`
 		Mode   string `json:"mode"`
 		Time   uint   `json:"time"`
+		At     time.Duration
 	}
 )
 

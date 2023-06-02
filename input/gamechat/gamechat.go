@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/wt-tools/wtscope/net/poll"
 )
@@ -70,6 +71,7 @@ func (s *Service) Grab(ctx context.Context) {
 			if s.msgID != m.ID {
 				t.Update(s.chatURL(m.ID))
 			}
+			m.At = time.Duration(m.Time) * time.Second
 			s.Messages <- m
 		}
 	}
