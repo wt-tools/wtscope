@@ -13,10 +13,10 @@ default: lint test
 -include doc.mk
 
 build:
-	go build $(FLAGS) $(APP)/cmd/$(CMD)
+	go build $(FLAGS) -o build/ $(APP)/cmd/$(CMD)
 
 build-all:
-	$(foreach dir,$(wildcard cmd/*), go build $(FLAGS) $(APP)/$(dir);)
+	$(foreach dir,$(wildcard cmd/*), go build $(FLAGS) -o build/ $(APP)/$(dir);)
 
 build-race:
 	go build $(FLAGS) -race $(APP)/cmd/$(CMD)

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/wt-tools/wtscope/config"
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
@@ -12,11 +13,11 @@ type Service struct {
 	Messages chan indicator
 
 	poll *poll.Service
-	conf Config
+	conf *config.Config
 	err  chan error
 }
 
-func New(conf Config, pollsvc *poll.Service, log chan error) *Service {
+func New(conf *config.Config, pollsvc *poll.Service, log chan error) *Service {
 	return &Service{
 		err:      log,
 		conf:     conf,

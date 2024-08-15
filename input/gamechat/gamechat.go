@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/wt-tools/wtscope/config"
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
@@ -18,11 +19,11 @@ type Service struct {
 	poll  poller
 	msgID uint
 	dedup deduplicator
-	conf  Config
+	conf  *config.Config
 	err   chan error
 }
 
-func New(conf Config, pollsvc poller, dedup deduplicator, log chan error) *Service {
+func New(conf *config.Config, pollsvc poller, dedup deduplicator, log chan error) *Service {
 	const name = "gamechat"
 	return &Service{
 		err:      log,

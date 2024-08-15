@@ -20,11 +20,15 @@ func main() {
 	ctx := context.Background()
 	kiwi.SinkTo(os.Stdout, kiwi.AsLogfmt()).Start()
 	log := kiwi.New()
-	conf := config.New()
-	log.Log("status", "WTScope started")
+	errlog := make(chan error, 16)
+	conf, err := config.Load(errlog)
+	if err != nil {
+		log.Log("status", "config load failed", "path", config.ConfPath)
+		os.Exit(1)
+	}
+	log.Log("status", "WTScope started", "config", conf.Dump())
 	defaultPolling := poll.New(http.DefaultClient, nil, 3, 2) // XXX
 	hudmsgDedup := dedup.New()
-	errlog := make(chan error, 16)
 	hudmsgSvc := hudmsg.New(log, conf, defaultPolling, hudmsgDedup)
 	stateSvc := state.New(conf, defaultPolling, errlog)
 	indicatorsSvc := indicators.New(conf, defaultPolling, errlog)

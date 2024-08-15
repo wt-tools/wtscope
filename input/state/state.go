@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/valyala/fastjson"
+	"github.com/wt-tools/wtscope/config"
 	"github.com/wt-tools/wtscope/net/poll"
 )
 
@@ -15,11 +16,11 @@ type Service struct {
 
 	p    fastjson.Parser
 	poll *poll.Service
-	conf Config
+	conf *config.Config
 	err  chan error
 }
 
-func New(conf Config, pollsvc *poll.Service, log chan error) *Service {
+func New(conf *config.Config, pollsvc *poll.Service, log chan error) *Service {
 	const name = "state"
 	return &Service{
 		err:      log,

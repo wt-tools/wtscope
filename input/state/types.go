@@ -97,7 +97,3 @@ const (
 	Thrust1Kgs           = "thrust 1, kgs"            // int
 	Efficiency1          = "efficiency 1, %"          // int
 )
-
-type Config interface {
-	GamePoint(string) string
-}

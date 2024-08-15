@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/wt-tools/wtscope/config"
 	"github.com/wt-tools/wtscope/events"
 	"github.com/wt-tools/wtscope/net/poll"
 )
@@ -19,11 +20,11 @@ type Service struct {
 	dmgID uint
 	evtID uint
 	dedup deduplicator
-	conf  Config
+	conf  *config.Config
 	err   chan error
 }
 
-func New(conf Config, pollsvc poller, dedup deduplicator, log chan error) *Service {
+func New(conf *config.Config, pollsvc poller, dedup deduplicator, log chan error) *Service {
 	const name = "hudmsg"
 	return &Service{
 		err:      log,

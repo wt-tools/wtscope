@@ -5,7 +5,9 @@ package config
 // active or not active, is purely coincidental.
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"os/user"
 	"path"
 	"strings"
@@ -15,31 +17,40 @@ import (
 	"github.com/knadh/koanf/v2"
 )
 
-var FilePath = "~/.config/wtscope/defaults.toml"
+const (
+	ConfPath     = "~/.config/wtscope/defaults.toml"
+	confTemplate = `# Replace with real configuration data
+[player]
+name = "YourPlayerName"
+squad = "YourSquadName"
 
-type config struct {
-	Player  string   `koanf:"player.name"`
-	Squad   string   `koanf:"player.squad"`
-	Friends []string `koanf:"player.friends"`
-	GameURL string   `koanf:"game.url"`
-	konfig  *koanf.Koanf
-	err     chan error
+[client]
+url = "http://localhost:8111/"
+`
+)
+
+type Config struct {
+	parsed struct {
+		Player    string   `koanf:"player.name"`
+		Squad     string   `koanf:"player.squad"`
+		Friends   []string `koanf:"player.friends"`
+		ClientURL string   `koanf:"client.url"`
+	}
+	konfig *koanf.Koanf
+	err    chan error
 }
 
-func Load(log chan error) (*config, error) {
+// Load load configuration. Don't forget to pass log channel.
+func Load(log chan error) (*Config, error) {
 	var err error
 	konfig := koanf.New(".")
-	cfg := config{err: log, konfig: konfig}
-	if strings.HasPrefix(FilePath, "~/") {
-		u, _ := user.Current()
-		FilePath = path.Join(u.HomeDir, FilePath[2:])
-	}
-	f := file.Provider(FilePath)
+	cfg := Config{err: log, konfig: konfig}
+	f := file.Provider(preparePath(ConfPath))
 	if err = konfig.Load(f, toml.Parser()); err != nil {
 		// TODO setup defaults here
 		return nil, fmt.Errorf("can't load config: %w", err)
 	}
-	if err = konfig.UnmarshalWithConf("", &cfg, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true}); err != nil {
+	if err = konfig.UnmarshalWithConf("", &cfg.parsed, koanf.UnmarshalConf{Tag: "koanf", FlatPaths: true}); err != nil {
 		return &cfg, fmt.Errorf("fail configuration file parsing: %w", err)
 	}
 	// here code thread unsafe yet
@@ -58,24 +69,43 @@ func Load(log chan error) (*config, error) {
 	return &cfg, nil
 }
 
-func (c *config) log(err error) {
+func preparePath(p string) string {
+	if strings.HasPrefix(p, "~/") {
+		u, _ := user.Current()
+		p = path.Join(u.HomeDir, p[2:])
+	}
+	return p
+}
+
+// CreateIfAbsent creates a new configuration file based on hardcoded
+// template. Use if the config loading failed.
+func CreateIfAbsent() error {
+	var err error
+	p := preparePath(ConfPath)
+	if _, err = os.Stat(p); errors.Is(err, os.ErrNotExist) {
+		err = os.WriteFile(p, []byte(confTemplate), 0o644)
+	}
+	return err
+}
+
+func (c *Config) log(err error) {
 	if c.err != nil {
 		c.err <- err
 	}
 }
 
-func (c *config) Dump() string {
+func (c *Config) Dump() string {
 	return c.konfig.Sprint()
 }
 
-func (c *config) PlayerName() string {
-	return c.Player
+func (c *Config) PlayerName() string {
+	return c.parsed.Player
 }
 
-func (c *config) PlayerSquad() string {
-	return c.Squad
+func (c *Config) PlayerSquad() string {
+	return c.parsed.Squad
 }
 
-func (c *config) GamePoint(methodPath string) string {
-	return fmt.Sprintf(c.GameURL+"%s", methodPath)
+func (c *Config) GamePoint(methodPath string) string {
+	return fmt.Sprintf(c.parsed.ClientURL+"%s", methodPath)
 }
